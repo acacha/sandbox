@@ -23807,6 +23807,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             var valid = ["", "primary", "info", "danger", "warning", "success", "default"];return valid.includes(value);
           } } }, watch: { collapsed: function collapsed() {
           this.isCollapsed = this.collapsed;
+        }, loading: function loading() {
+          this.isLoading = this.loading;
         } }, methods: { hasFooterSlot: function hasFooterSlot() {
           return !!this.$slots["footer"];
         }, load: function load() {
@@ -23985,6 +23987,7 @@ Vue.use(__WEBPACK_IMPORTED_MODULE_4_vue_events___default.a);
   },
   data: function data() {
     return {
+      isCollapsed: this.collapsed,
       loading: false,
       deleting: false,
       css: {
@@ -28387,23 +28390,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -28632,13 +28618,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   methods: {
     collapse: function collapse() {
       this.$events.fire('collapse-create-user');
-      this.collapseCreateUser = true;
+      this.$events.fire('collapse-user-invitations-list');
       this.collapseUserInvitations = true;
       this.collapseUsersList = true;
     },
     expand: function expand() {
       this.$events.fire('expand-create-user');
-      this.collapseCreateUser = false;
+      this.$events.fire('expand-user-invitations-list');
       this.collapseUserInvitations = false;
       this.collapseUsersList = false;
     }
@@ -28965,20 +28951,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -29070,6 +29042,12 @@ Vue.component('user-invitations-list-custom-actions', __WEBPACK_IMPORTED_MODULE_
       Vue.nextTick(function () {
         return _this4.refresh();
       });
+    },
+    'collapse-user-invitations-list': function collapseUserInvitationsList() {
+      this.isCollapsed = true;
+    },
+    'expand-user-invitations-list': function expandUserInvitationsList() {
+      this.isCollapsed = false;
     }
   }
 });
@@ -49186,33 +49164,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "deleting-user-spinner"
     }
-  }) : _vm._e(), _vm._v("  Delete")])])])])]), _vm._v(" "), _c('div', {
-    staticClass: "box box-success",
-    class: {
-      'collapsed-box': _vm.collapsed
-    },
+  }) : _vm._e(), _vm._v("  Delete")])])])])]), _vm._v(" "), _c('adminlte-vue-box', {
     attrs: {
-      "id": "users-list-box"
+      "color": "success",
+      "collapsed": _vm.isCollapsed,
+      "id": "users-list-box",
+      "loading": _vm.loading
     }
-  }, [_c('div', {
-    staticClass: "box-header with-border"
-  }, [_c('h3', {
-    staticClass: "box-title"
-  }, [_vm._v("Users Lists")]), _vm._v(" "), _c('div', {
-    staticClass: "box-tools pull-right"
-  }, [_c('button', {
-    staticClass: "btn btn-box-tool",
-    attrs: {
-      "type": "button",
-      "data-widget": "collapse"
-    }
-  }, [(_vm.collapsed) ? _c('i', {
-    staticClass: "fa fa-plus"
-  }) : _c('i', {
-    staticClass: "fa fa-minus"
-  })]), _vm._v(" "), _vm._m(2)])]), _vm._v(" "), _c('div', {
-    staticClass: "box-body"
-  }, [_c('users-list-filter-bar'), _vm._v(" "), _c('div', {
+  }, [_c('span', {
+    slot: "title"
+  }, [_vm._v("Users Lists")]), _vm._v(" "), _c('users-list-filter-bar'), _vm._v(" "), _c('div', {
     staticClass: "table-responsive"
   }, [_c('vuetable', {
     ref: "vuetable",
@@ -49250,11 +49211,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "vuetable-pagination:change-page": _vm.onChangePage
     }
-  })], 1)], 1), _vm._v(" "), (_vm.loading) ? _c('div', {
-    staticClass: "overlay"
-  }, [_c('i', {
-    staticClass: "fa fa-refresh fa-spin"
-  })]) : _vm._e()])])
+  })], 1)], 1)], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "modal-header"
@@ -49276,16 +49233,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "modal-body"
   }, [_c('p', [_vm._v("Are you sure you want to delete user?")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('button', {
-    staticClass: "btn btn-box-tool",
-    attrs: {
-      "type": "button",
-      "data-widget": "remove"
-    }
-  }, [_c('i', {
-    staticClass: "fa fa-times"
-  })])
 }]}
 module.exports.render._withStripped = true
 if (false) {
@@ -49343,33 +49290,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "deleting-user-spinner"
     }
-  }) : _vm._e(), _vm._v("  Delete")])])])])]), _vm._v(" "), _c('div', {
-    staticClass: "box box-success",
-    class: {
-      'collapsed-box': _vm.collapsed
-    },
+  }) : _vm._e(), _vm._v("  Delete")])])])])]), _vm._v(" "), _c('adminlte-vue-box', {
     attrs: {
-      "id": "user-invitations-list-box"
+      "color": "success",
+      "collapsed": _vm.isCollapsed,
+      "id": "user-invitations",
+      "loading": _vm.loading
     }
-  }, [_c('div', {
-    staticClass: "box-header with-border"
-  }, [_c('h3', {
-    staticClass: "box-title"
-  }, [_vm._v("Invitations Lists")]), _vm._v(" "), _c('div', {
-    staticClass: "box-tools pull-right"
-  }, [_c('button', {
-    staticClass: "btn btn-box-tool",
-    attrs: {
-      "type": "button",
-      "data-widget": "collapse"
-    }
-  }, [(_vm.collapsed) ? _c('i', {
-    staticClass: "fa fa-plus"
-  }) : _c('i', {
-    staticClass: "fa fa-minus"
-  })]), _vm._v(" "), _vm._m(2)])]), _vm._v(" "), _c('div', {
-    staticClass: "box-body"
-  }, [_c('user-invitations-list-filter-bar'), _vm._v(" "), _c('div', {
+  }, [_c('span', {
+    slot: "title"
+  }, [_vm._v("Invitations Lists")]), _vm._v(" "), _c('user-invitations-list-filter-bar'), _vm._v(" "), _c('div', {
     staticClass: "table-responsive"
   }, [_c('vuetable', {
     ref: "vuetable",
@@ -49407,11 +49337,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     on: {
       "vuetable-pagination:change-page": _vm.onChangePage
     }
-  })], 1)], 1), _vm._v(" "), (_vm.loading) ? _c('div', {
-    staticClass: "overlay"
-  }, [_c('i', {
-    staticClass: "fa fa-refresh fa-spin"
-  })]) : _vm._e()])])
+  })], 1)], 1)], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "modal-header"
@@ -49433,16 +49359,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "modal-body"
   }, [_c('p', [_vm._v("Are you sure you want to delete user invitation?")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('button', {
-    staticClass: "btn btn-box-tool",
-    attrs: {
-      "type": "button",
-      "data-widget": "remove"
-    }
-  }, [_c('i', {
-    staticClass: "fa fa-times"
-  })])
 }]}
 module.exports.render._withStripped = true
 if (false) {

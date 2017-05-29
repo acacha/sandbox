@@ -22,56 +22,42 @@
             </div>
         </div>
 
-        <!--TODO adminlte box component-->
-        <div class="box box-success" v-bind:class="{ 'collapsed-box': collapsed }"  id="user-invitations-list-box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Invitations Lists</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                        <i v-if="collapsed" class="fa fa-plus"></i>
-                        <i v-else class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                </div>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <user-invitations-list-filter-bar></user-invitations-list-filter-bar>
-                <div class="table-responsive">
-                    <vuetable ref="vuetable"
-                              :api-url="apiUrl"
-                              :fields="columns"
-                              pagination-path=""
-                              :css="css.table"
-                              :api-mode="true"
-                              row-class="um-user-invitation-row"
-                              :append-params="moreParams"
-                              :multi-sort="true"
-                              detail-row-component="user-invitations-detail-row"
-                              @vuetable:pagination-data="onPaginationData"
-                              @vuetable:cell-clicked="onCellClicked"
-                              @vuetable:loading="showLoader"
-                              @vuetable:loaded="hideLoader"
-                    ></vuetable>
-                </div>
+        <adminlte-vue-box color="success" :collapsed="isCollapsed" id="user-invitations" :loading="loading">
+            <span slot="title">Invitations Lists</span>
 
-                <div class="vuetable-pagination">
-                    <vuetable-pagination-info ref="paginationInfo"
-                                              info-class="pagination-info"
-                                              infoTemplate="Displaying {from} to {to} of {total} invitations"
-                    ></vuetable-pagination-info>
+            <user-invitations-list-filter-bar></user-invitations-list-filter-bar>
+            <div class="table-responsive">
+                <vuetable ref="vuetable"
+                          :api-url="apiUrl"
+                          :fields="columns"
+                          pagination-path=""
+                          :css="css.table"
+                          :api-mode="true"
+                          row-class="um-user-invitation-row"
+                          :append-params="moreParams"
+                          :multi-sort="true"
+                          detail-row-component="user-invitations-detail-row"
+                          @vuetable:pagination-data="onPaginationData"
+                          @vuetable:cell-clicked="onCellClicked"
+                          @vuetable:loading="showLoader"
+                          @vuetable:loaded="hideLoader"
+                ></vuetable>
+            </div>
 
-                    <vuetable-pagination ref="pagination"
-                                         :css="css.pagination"
-                                         :icons="css.icons"
-                                         @vuetable-pagination:change-page="onChangePage"
-                    ></vuetable-pagination>
-                </div>
+            <div class="vuetable-pagination">
+                <vuetable-pagination-info ref="paginationInfo"
+                                          info-class="pagination-info"
+                                          infoTemplate="Displaying {from} to {to} of {total} invitations"
+                ></vuetable-pagination-info>
+
+                <vuetable-pagination ref="pagination"
+                                     :css="css.pagination"
+                                     :icons="css.icons"
+                                     @vuetable-pagination:change-page="onChangePage"
+                ></vuetable-pagination>
             </div>
-            <div class="overlay" v-if="loading">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
-        </div>
+        </adminlte-vue-box>
+
     </div>
 </template>
 
@@ -161,6 +147,12 @@
       },
       'reload-user-invitations' () {
         Vue.nextTick(() => this.refresh())
+      },
+      'collapse-user-invitations-list' () {
+        this.isCollapsed = true
+      },
+      'expand-user-invitations-list' () {
+        this.isCollapsed = false
       }
     }
   }

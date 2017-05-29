@@ -21,17 +21,18 @@ export default {
     resource: {
       type: String,
       required: true
-    },
+    }
   },
   components: {
     Vuetable,
     VuetablePagination,
     VuetablePaginationInfo
   },
-  data() {
+  data () {
     return {
+      isCollapsed: this.collapsed,
       loading: false,
-      deleting : false,
+      deleting: false,
       css: {
         table: {
           tableClass: 'table table-bordered table-striped table-hover',
@@ -48,19 +49,19 @@ export default {
             first: 'glyphicon glyphicon-step-backward',
             prev: 'glyphicon glyphicon-chevron-left',
             next: 'glyphicon glyphicon-chevron-right',
-            last: 'glyphicon glyphicon-step-forward',
-          },
+            last: 'glyphicon glyphicon-step-forward'
+          }
         }
       },
-      moreParams: {},
+      moreParams: {}
     }
   },
   methods: {
-    toogle(){
+    toogle () {
       $('#' + this.resource + '-list-box').toggleBox()
     },
     deleteResource () {
-      this.deleting = true;
+      this.deleting = true
       var id = document.querySelector(
         'div#' + this.resource + '-list div.modal div.modal-footer input#' + this.resource + '_id').value
 
@@ -69,27 +70,27 @@ export default {
         .then(function (response) {
           component.$refs.vuetable.reload()
           $('#confirm-' + component.resource + '-deletion-modal').modal('hide')
-          component.deleting = false;
+          component.deleting = false
         })
         .catch(function (error) {
-          component.deleting = false;
-        });
+          component.deleting = false
+        })
     },
-    showDeleteDialog(id) {
+    showDeleteDialog (id) {
       var component = this
       $('#confirm-' + this.resource + '-deletion-modal').on('show.bs.modal', function (event) {
         var modal = $(this)
-        modal.find('.modal-footer input#'+ component.resource +'_id').val(id)
+        modal.find('.modal-footer input#' + component.resource + '_id').val(id)
       })
-      $('#confirm-'+ component.resource +'-deletion-modal').modal('show')
+      $('#confirm-' + component.resource + '-deletion-modal').modal('show')
     },
-    reload() {
+    reload () {
       this.$refs.vuetable.reload()
     },
-    refresh() {
+    refresh () {
       this.$refs.vuetable.refresh()
     },
-    detailRowEditing(id, editing) {
+    detailRowEditing (id, editing) {
       if (!this.$refs.vuetable.isVisibleDetailRow(id)) {
         store.editing[id] = editing
       }
@@ -105,10 +106,10 @@ export default {
     onCellClicked (data, field, event) {
       this.$refs.vuetable.toggleDetailRow(data.id)
     },
-    showLoader() {
+    showLoader () {
       this.loading = true
     },
-    hideLoader() {
+    hideLoader () {
       this.loading = false
     }
   }

@@ -44,13 +44,13 @@
     methods: {
       collapse() {
         this.$events.fire('collapse-create-user')
-        this.collapseCreateUser=true
+        this.$events.fire('collapse-user-invitations-list')
         this.collapseUserInvitations=true
         this.collapseUsersList=true
       },
       expand () {
         this.$events.fire('expand-create-user')
-        this.collapseCreateUser=false
+        this.$events.fire('expand-user-invitations-list')
         this.collapseUserInvitations=false
         this.collapseUsersList=false
       }

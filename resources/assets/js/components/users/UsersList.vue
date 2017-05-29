@@ -1,6 +1,5 @@
 <template>
     <div id="user-list">
-
         <!-- TODO Modal adminlte-->
         <div class="modal modal-danger" id="confirm-user-deletion-modal">
             <div class="modal-dialog">
@@ -22,55 +21,39 @@
             </div>
         </div>
 
-        <!--TODO adminlte box component-->
-        <div class="box box-success" id="users-list-box" :class="{ 'collapsed-box': collapsed }">
-            <div class="box-header with-border">
-                <h3 class="box-title">Users Lists</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                        <i v-if="collapsed" class="fa fa-plus"></i>
-                        <i v-else class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                </div>
+        <adminlte-vue-box color="success" :collapsed="isCollapsed" id="users-list-box" :loading="loading">
+            <span slot="title">Users Lists</span>
+            <users-list-filter-bar></users-list-filter-bar>
+            <div class="table-responsive">
+                <vuetable ref="vuetable"
+                          :api-url="apiUrl"
+                          :fields="columns"
+                          pagination-path=""
+                          :css="css.table"
+                          :api-mode="true"
+                          row-class="um-user-row"
+                          :append-params="moreParams"
+                          :multi-sort="true"
+                          detail-row-component="user-detail-row"
+                          @vuetable:pagination-data="onPaginationData"
+                          @vuetable:cell-clicked="onCellClicked"
+                          @vuetable:loading="showLoader"
+                          @vuetable:loaded="hideLoader"
+                ></vuetable>
             </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <users-list-filter-bar></users-list-filter-bar>
-                <div class="table-responsive">
-                    <vuetable ref="vuetable"
-                              :api-url="apiUrl"
-                              :fields="columns"
-                              pagination-path=""
-                              :css="css.table"
-                              :api-mode="true"
-                              row-class="um-user-row"
-                              :append-params="moreParams"
-                              :multi-sort="true"
-                              detail-row-component="user-detail-row"
-                              @vuetable:pagination-data="onPaginationData"
-                              @vuetable:cell-clicked="onCellClicked"
-                              @vuetable:loading="showLoader"
-                              @vuetable:loaded="hideLoader"
-                    ></vuetable>
-                </div>
-                <div class="vuetable-pagination">
-                    <vuetable-pagination-info ref="paginationInfo"
-                                              info-class="pagination-info"
-                                              infoTemplate="Displaying {from} to {to} of {total} users"
-                    ></vuetable-pagination-info>
+            <div class="vuetable-pagination">
+                <vuetable-pagination-info ref="paginationInfo"
+                                          info-class="pagination-info"
+                                          infoTemplate="Displaying {from} to {to} of {total} users"
+                ></vuetable-pagination-info>
 
-                    <vuetable-pagination ref="pagination"
-                                         :css="css.pagination"
-                                         :icons="css.icons"
-                                         @vuetable-pagination:change-page="onChangePage"
-                    ></vuetable-pagination>
-                </div>
+                <vuetable-pagination ref="pagination"
+                                     :css="css.pagination"
+                                     :icons="css.icons"
+                                     @vuetable-pagination:change-page="onChangePage"
+                ></vuetable-pagination>
             </div>
-            <div class="overlay" v-if="loading">
-                <i class="fa fa-refresh fa-spin"></i>
-            </div>
-        </div>
+        </adminlte-vue-box>
     </div>
 
 </template>
