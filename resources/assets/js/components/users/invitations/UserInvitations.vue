@@ -1,23 +1,11 @@
 <template>
-    <div class="box box-primary" v-bind:class="{ 'collapsed-box': collapsed }" id="user-invitations">
-        <div class="box-header with-border">
-            <h3 class="box-title">Invitations</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                    <i v-if="collapsed" class="fa fa-plus"></i>
-                    <i v-else class="fa fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-            </div>
-        </div>
-        <div class="box-body">
+    <adminlte-vue-box color="primary" :collapsed="isCollapsed" id="user-invitations">
+        <span slot="title">Invitations</span>
 
-            <invite-user :api-url="apiUrl  + '-invitations'"></invite-user>
+        <invite-user :api-url="apiUrl  + '-invitations'"></invite-user>
 
-            <user-invitations-list :api-url="apiUrl + '-invitations'" :collapsed="collapseUserInvitationsList" resource="user-invitation"></user-invitations-list>
-
-        </div>
-    </div>
+        <user-invitations-list :api-url="apiUrl + '-invitations'" :collapsed="collapseUserInvitationsList" resource="user-invitation"></user-invitations-list>
+    </adminlte-vue-box>
 </template>
 
 <script>
@@ -30,7 +18,8 @@
   export default {
     data() {
       return {
-        collapseUserInvitationsList : this.collapsedList
+        collapseUserInvitationsList : this.collapsedList,
+        isCollapsed: this.collapsed
       }
     },
     components: {
@@ -65,6 +54,14 @@
       }
       if (typeof QueryString.parse(location.search).collapse !== 'undefined') {
         this.collapse()
+      }
+    },
+    events: {
+      'collapse-invite-user' () {
+        this.isCollapsed = true
+      },
+      'expand-invite-user' () {
+        this.isCollapsed = false
       }
     }
   }

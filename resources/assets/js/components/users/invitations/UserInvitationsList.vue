@@ -158,6 +158,9 @@
       },
       'toogle-edit-user-invitations' (id) {
         this.detailRowEditing(id,true)
+      },
+      'reload-user-invitations' () {
+        Vue.nextTick(() => this.refresh())
       }
     }
   }

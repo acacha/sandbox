@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "acacha-forms": "^0.1.7",
+    "adminlte-vue": "^0.1.1",
     "axios": "^0.15.3",
     "query-string": "^4.3.4",
     "vue-echo": "^1.0.1"

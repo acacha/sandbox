@@ -47,6 +47,7 @@
         this.form.post(API_URL)
           .then(response => {
             console.log('Invited ok')
+            this.$events.fire('reload-user-invitations')
           })
           .catch(error => {
             console.log('Invited error: ' + error)

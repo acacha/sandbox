@@ -15,6 +15,8 @@ require('./bootstrap');
 
 window.Vue = require('vue')
 
+import AdminlteVue from 'adminlte-vue'
+Vue.use(AdminlteVue)
 
 // Use trans function in Vue (equivalent to trans() Laravel Translations helper). See htmlheader.balde.php partial.
 Vue.prototype.trans = (key) => {

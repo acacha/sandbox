@@ -98,7 +98,7 @@ class UsersManagementTest extends DuskTestCase
 
     /**
      * Create user.
-     *
+     * @group caca3
      * @test
      */
     public function create_user()
@@ -118,6 +118,11 @@ class UsersManagementTest extends DuskTestCase
                 'name' => $newUser->name,
                 'email' => $newUser->email
             ]);
+
+            //Assert list has been reloaded
+            $browser->driver->executeScript('document.getElementById("user-list").scrollIntoView();');
+            $browser->assertSeeIn('div#user-list',$newUser->email);
+            $browser->assertSeeIn('div#user-list',$newUser->name);
         });
     }
 
@@ -133,6 +138,7 @@ class UsersManagementTest extends DuskTestCase
         $manager = $this->createUserManagerUser();
         $faker = Factory::create();
         $this->browse(function ($browser) use ($manager,$faker) {
+//            $browser->pause(500000);
             $this->fill_create_user_form($browser, $manager, '',$faker->email,$faker->password);
             $this->assertSeeValidationError($browser,'span#errorForInputCreateUserName',
                 'The name field is required.');
@@ -501,7 +507,7 @@ class UsersManagementTest extends DuskTestCase
                 ->assertMissing('i#add-user-invitation-spinner');
 
             $faker = Factory::create();
-            $browser->type('#inputUserInvitationEmail',$faker->unique()->safeEmail)
+            $browser->type('#inputUserInvitationEmail',$email = $faker->unique()->safeEmail)
                     ->press('Invite');
 
             //Assert see adding/inviting spinner/icon
@@ -513,6 +519,10 @@ class UsersManagementTest extends DuskTestCase
             $browser->assertSeeIn('div#add-user-invitation-result', 'User invited!');
             //Assert email field has been cleared
             $this->assertEquals($browser->value('#inputUserInvitationEmail'),'');
+
+            //Assert list has been reloaded
+            $browser->driver->executeScript('document.getElementById("user-invitation-list").scrollIntoView();');
+            $browser->assertSeeIn('div#user-invitation-list',$email);
         });
 
         $this->logout();

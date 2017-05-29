@@ -24,7 +24,7 @@
     data() {
       return {
         store : store,
-        collapseCreateUser : true,
+        collapseCreateUser: true,
         collapseUserInvitations: false,
         collapseUsersList : false
       }
@@ -43,11 +43,13 @@
     },
     methods: {
       collapse() {
+        this.$events.fire('collapse-create-user')
         this.collapseCreateUser=true
         this.collapseUserInvitations=true
         this.collapseUsersList=true
       },
       expand () {
+        this.$events.fire('expand-create-user')
         this.collapseCreateUser=false
         this.collapseUserInvitations=false
         this.collapseUsersList=false

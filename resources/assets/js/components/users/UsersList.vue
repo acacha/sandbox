@@ -160,6 +160,9 @@
       },
       'toogle-edit-user' (id) {
         this.detailRowEditing(id,true)
+      },
+      'reload-user-list' () {
+        Vue.nextTick(() => this.refresh())
       }
     }
   }
