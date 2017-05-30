@@ -72,17 +72,17 @@ class UsersManagementTest extends DuskTestCase
         $this->createUsers(75);
         $this->browse(function (Browser $browser) use ($manager) {
             $this->login($browser,$manager)
-                ->visit('/management/users?expand')
-                ->assertSeeIn('div#users-list-box div.box-header h3.box-title', 'Users List')
-                //See search form
-                ->assertVisible('div.filter-bar')
+                ->visit('/management/users')
+                ->assertSeeIn('div#users-list-box div.box-header div.box-title', 'Users List')
+                ->assertVisible('div#users-list-filter-bar')
                 //See pagination
-                ->assertVisible('div.vuetable-pagination')
+                ->driver->executeScript('document.getElementById("users-list-vuetable-pagination").scrollIntoView();');
+            $browser->assertVisible('div#users-list-vuetable-pagination')
                 //See pagination info
-                ->assertVisible('div.vuetable-pagination div.vuetable-pagination-info')
-                ->assertSeeIn('div#users-list-box div.box-body div.vuetable-pagination div.vuetable-pagination-info', 'Displaying 1 to 15 of 76 users')
+                ->assertVisible('div#users-list-vuetable-pagination div.vuetable-pagination-info')
+                ->assertSeeIn('div#users-list-box div.box-body div#users-list-vuetable-pagination div.vuetable-pagination-info', 'Displaying 1 to 15 of 76 users')
                 //See paginator
-                ->assertVisible('div.vuetable-pagination div.pagination');
+                ->assertVisible('div#users-list-vuetable-pagination div.pagination');
             //Check number of columns/fields
             $this->assertEquals(8, count($browser->elements('div#users-list-box div.box-body table.vuetable thead tr th')));
             //Check number of rows/users
@@ -98,7 +98,7 @@ class UsersManagementTest extends DuskTestCase
 
     /**
      * Create user.
-     * @group caca3
+     *
      * @test
      */
     public function create_user()
@@ -470,16 +470,17 @@ class UsersManagementTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($manager) {
             $this->login($browser,$manager)
                 ->visit('/management/users?expand')
-                ->assertSeeIn('div#user-invitations-list-box div.box-header h3.box-title', 'Invitations List')
+                ->assertSeeIn('div#user-invitations-list-box div.box-header div.box-title', 'Invitations List')
                 //See search form
                 ->assertVisible('div.filter-bar')
-                //See pagination
-                ->assertVisible('div.vuetable-pagination')
+                ->driver->executeScript('document.getElementById("user-invitations-list-vuetable-pagination").scrollIntoView();');
+            //See pagination
+            $browser->assertVisible('div#user-invitations-list-vuetable-pagination')
                 //See pagination info
-                ->assertVisible('div.vuetable-pagination div.vuetable-pagination-info')
+                ->assertVisible('div#user-invitations-list-vuetable-pagination div.vuetable-pagination-info')
                 ->assertSeeIn('div#user-invitations-list-box div.box-body div.vuetable-pagination div.vuetable-pagination-info', 'Displaying 1 to 15 of 75 invitations')
                 //See paginator
-                ->assertVisible('div.vuetable-pagination div.pagination');
+                ->assertVisible('div#user-invitations-list-vuetable-pagination div.pagination');
             //Check number of columns/fields
             $this->assertEquals(9, count($browser->elements('div#user-invitations-list-box div.box-body table.vuetable thead tr th')));
             //Check number of rows/users
@@ -499,30 +500,11 @@ class UsersManagementTest extends DuskTestCase
         dump(__FUNCTION__ );
 
         $manager = $this->createUserManagerUser();
+        $faker = Factory::create();
+        $email = $faker->unique()->safeEmail;
 
-        $this->browse(function (Browser $browser) use ($manager) {
-
-            $this->login($browser,$manager)
-                ->visit('/management/users?expand')
-                ->assertMissing('i#add-user-invitation-spinner');
-
-            $faker = Factory::create();
-            $browser->type('#inputUserInvitationEmail',$email = $faker->unique()->safeEmail)
-                    ->press('Invite');
-
-            //Assert see adding/inviting spinner/icon
-            $browser->assertVisible('i#add-user-invitation-spinner');
-            //Wait for ajax request to finish
-            $browser->waitUntilMissing('i#add-user-invitation-spinner');
-            //Assert see result ok
-            $browser->assertVisible('div#add-user-invitation-result');
-            $browser->assertSeeIn('div#add-user-invitation-result', 'User invited!');
-            //Assert email field has been cleared
-            $this->assertEquals($browser->value('#inputUserInvitationEmail'),'');
-
-            //Assert list has been reloaded
-            $browser->driver->executeScript('document.getElementById("user-invitation-list").scrollIntoView();');
-            $browser->assertSeeIn('div#user-invitation-list',$email);
+        $this->browse(function ($browser) use ($manager, $email) {
+            $this->fill_add_user_invitation($browser, $manager, $email);
         });
 
         $this->logout();
@@ -709,6 +691,31 @@ class UsersManagementTest extends DuskTestCase
      * Private/helper test functions for user invitations.
      * ----------------------------------------------------
      */
+
+    /**
+     * Fill add user invitation.
+     *
+     * @param $browser
+     * @param $manager
+     * @param null $email
+     */
+    private function fill_add_user_invitation($browser, $manager, $email = null) {
+        $this->login($browser,$manager);
+        $faker = Factory::create();
+        $browser->visit('/management/users?expand')
+            ->assertMissing('i#add-user-invitation-spinner')
+            ->type('#inputUserInvitationEmail',$email = ($email === null) ? $faker->email : $email)
+            ->press('Invite')
+            //Assert see adding/inviting spinner/icon
+            ->assertVisible('i#add-user-invitation-spinner')
+            //Wait for ajax request to finish
+            ->waitUntilMissing('i#add-user-invitation-spinner')
+            //Assert see result ok
+            ->assertVisible('div#add-user-invitation-result')
+            ->assertSeeIn('div#add-user-invitation-result', 'User invited!');
+        //Assert email field has been cleared
+        $this->assertEquals($browser->value('#inputUserInvitationEmail'),'');
+    }
 
     /**
      * Create user with only see permissions.

@@ -41,7 +41,7 @@
                           @vuetable:loaded="hideLoader"
                 ></vuetable>
             </div>
-            <div class="vuetable-pagination">
+            <div class="vuetable-pagination" id="users-list-vuetable-pagination">
                 <vuetable-pagination-info ref="paginationInfo"
                                           info-class="pagination-info"
                                           infoTemplate="Displaying {from} to {to} of {total} users"

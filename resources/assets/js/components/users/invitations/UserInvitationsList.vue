@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        <adminlte-vue-box color="success" :collapsed="isCollapsed" id="user-invitations" :loading="loading">
+        <adminlte-vue-box color="success" :collapsed="isCollapsed" id="user-invitations-list-box" :loading="loading">
             <span slot="title">Invitations Lists</span>
 
             <user-invitations-list-filter-bar></user-invitations-list-filter-bar>
@@ -44,7 +44,7 @@
                 ></vuetable>
             </div>
 
-            <div class="vuetable-pagination">
+            <div class="vuetable-pagination" id="user-invitations-list-vuetable-pagination">
                 <vuetable-pagination-info ref="paginationInfo"
                                           info-class="pagination-info"
                                           infoTemplate="Displaying {from} to {to} of {total} invitations"
