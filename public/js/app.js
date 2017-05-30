@@ -28419,16 +28419,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -28927,17 +28917,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInvitationsListCustomActions__ = __webpack_require__(127);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UserInvitationsListCustomActions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__UserInvitationsListCustomActions__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mixins_List_js__ = __webpack_require__(22);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -49164,17 +49143,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "user-list"
     }
-  }, [_c('div', {
-    staticClass: "modal modal-danger",
+  }, [_c('adminlte-vue-modal', {
     attrs: {
-      "id": "confirm-user-deletion-modal"
+      "id": "confirm-user-deletion-modal",
+      "color": "danger"
     }
-  }, [_c('div', {
-    staticClass: "modal-dialog"
-  }, [_c('div', {
-    staticClass: "modal-content"
-  }, [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
+  }, [_c('h4', {
+    slot: "title"
+  }, [_vm._v("Confirm User deletion")]), _vm._v(" "), _c('p', [_vm._v("Are you sure you want to delete user?")]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer",
+    slot: "footer"
   }, [_c('input', {
     attrs: {
       "type": "hidden",
@@ -49203,7 +49181,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "deleting-user-spinner"
     }
-  }) : _vm._e(), _vm._v("  Delete")])])])])]), _vm._v(" "), _c('adminlte-vue-box', {
+  }) : _vm._e(), _vm._v("  Delete")])])]), _vm._v(" "), _c('adminlte-vue-box', {
     attrs: {
       "color": "success",
       "collapsed": _vm.isCollapsed,
@@ -49254,28 +49232,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "vuetable-pagination:change-page": _vm.onChangePage
     }
   })], 1)], 1)], 1)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "modal-header"
-  }, [_c('button', {
-    staticClass: "close",
-    attrs: {
-      "type": "button",
-      "data-dismiss": "modal",
-      "aria-label": "Close"
-    }
-  }, [_c('span', {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }, [_vm._v("×")])]), _vm._v(" "), _c('h4', {
-    staticClass: "modal-title"
-  }, [_vm._v("Confirm User deletion")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "modal-body"
-  }, [_c('p', [_vm._v("Are you sure you want to delete user?")])])
-}]}
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
@@ -49293,17 +49250,16 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "user-invitation-list"
     }
-  }, [_c('div', {
-    staticClass: "modal modal-danger",
+  }, [_c('adminlte-vue-modal', {
     attrs: {
-      "id": "confirm-user-invitation-deletion-modal"
+      "id": "confirm-user-invitation-deletion-modal",
+      "color": "danger"
     }
-  }, [_c('div', {
-    staticClass: "modal-dialog"
-  }, [_c('div', {
-    staticClass: "modal-content"
-  }, [_vm._m(0), _vm._v(" "), _vm._m(1), _vm._v(" "), _c('div', {
-    staticClass: "modal-footer"
+  }, [_c('h4', {
+    slot: "title"
+  }, [_vm._v("Confirm User Invitation deletion")]), _vm._v(" "), _c('p', [_vm._v("Are you sure you want to delete user invitation?")]), _vm._v(" "), _c('div', {
+    staticClass: "modal-footer",
+    slot: "footer"
   }, [_c('input', {
     attrs: {
       "type": "hidden",
@@ -49332,7 +49288,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "id": "deleting-user-spinner"
     }
-  }) : _vm._e(), _vm._v("  Delete")])])])])]), _vm._v(" "), _c('adminlte-vue-box', {
+  }) : _vm._e(), _vm._v("  Delete")])])]), _vm._v(" "), _c('adminlte-vue-box', {
     attrs: {
       "color": "success",
       "collapsed": _vm.isCollapsed,
@@ -49383,28 +49339,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "vuetable-pagination:change-page": _vm.onChangePage
     }
   })], 1)], 1)], 1)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "modal-header"
-  }, [_c('button', {
-    staticClass: "close",
-    attrs: {
-      "type": "button",
-      "data-dismiss": "modal",
-      "aria-label": "Close"
-    }
-  }, [_c('span', {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }, [_vm._v("×")])]), _vm._v(" "), _c('h4', {
-    staticClass: "modal-title"
-  }, [_vm._v("Confirm User Invitation deletion")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "modal-body"
-  }, [_c('p', [_vm._v("Are you sure you want to delete user invitation?")])])
-}]}
+},staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()

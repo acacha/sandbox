@@ -1,25 +1,15 @@
 <template>
     <div id="user-list">
-        <!-- TODO Modal adminlte-->
-        <div class="modal modal-danger" id="confirm-user-deletion-modal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title">Confirm User deletion</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete user?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="hidden" id="user_id" value=""/>
-                        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-outline" id="confirm-user-deletion-button" @click="deleteResource()"><i v-if="this.deleting" id="deleting-user-spinner" class="fa fa-refresh fa-spin"></i>  Delete</button>
-                    </div>
-                </div>
+
+        <adminlte-vue-modal id="confirm-user-deletion-modal" color="danger">
+            <h4 slot="title">Confirm User deletion</h4>
+            <p>Are you sure you want to delete user?</p>
+            <div class="modal-footer" slot="footer">
+                <input type="hidden" id="user_id" value=""/>
+                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline" id="confirm-user-deletion-button" @click="deleteResource()"><i v-if="this.deleting" id="deleting-user-spinner" class="fa fa-refresh fa-spin"></i>  Delete</button>
             </div>
-        </div>
+        </adminlte-vue-modal>
 
         <adminlte-vue-box color="success" :collapsed="isCollapsed" id="users-list-box" :loading="loading">
             <span slot="title">Users Lists</span>
