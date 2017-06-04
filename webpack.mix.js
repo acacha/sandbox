@@ -13,6 +13,11 @@ const { mix } = require('laravel-mix');
 
 mix.js('resources/assets/js/app.js', 'public/js')
    .js('resources/assets/js/app-landing.js', 'public/js/app-landing.js')
+   .js('resources/assets/js/app-fullscreen.js', 'public/js/app-p-fullscreen.js')
+   .scripts([
+    'resources/assets/js/modernizr.custom.js',
+    'public/js/app-p-fullscreen.js'
+    ], 'public/js/app-fullscreen.js')
    .sass('resources/assets/sass/app.scss', 'public/css')
    .less('node_modules/bootstrap-less/bootstrap/bootstrap.less', 'public/css/bootstrap.css')
    .less('resources/assets/less/adminlte-app.less','public/css/adminlte-app.css')
@@ -28,12 +33,18 @@ mix.js('resources/assets/js/app.js', 'public/js')
        'public/css/bootstrap.css',
        'resources/assets/css/main.css'
    ], 'public/css/all-landing.css')
+  .combine([
+    'node_modules/normalize.css/normalize.css',
+    'resources/assets/css/fullscreen.css'
+    ], 'public/css/all-fullscreen.css')
    //APP RESOURCES
    .copy('resources/assets/img/*.*','public/img')
    //VENDOR RESOURCES
    .copy('node_modules/font-awesome/fonts/*.*','public/fonts/')
    .copy('node_modules/ionicons/dist/fonts/*.*','public/fonts/')
    .copy('node_modules/admin-lte/bootstrap/fonts/*.*','public/fonts/bootstrap')
+   .copy('resources/assets/fonts/codropsicons','public/fonts/codropsicons')
+   .copy('resources/assets/fonts/icomoon','public/fonts/icomoon')
    .copy('node_modules/admin-lte/dist/css/skins/*.*','public/css/skins')
    .copy('node_modules/admin-lte/dist/img','public/img')
    .copy('node_modules/admin-lte/plugins','public/plugins')

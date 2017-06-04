@@ -1,5 +1,3 @@
-/* global _ Vue */
-
 window._ = require('lodash')
 
 /**

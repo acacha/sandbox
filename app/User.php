@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 /**
  * Class User.
@@ -15,7 +16,22 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, HasApiTokens, ExposePermissions;
+    use Notifiable, HasRoles, HasApiTokens, ExposePermissions, RevisionableTrait;
+
+    /**
+     * Boot method.
+     */
+    public static function boot()
+    {
+        parent::boot();
+    }
+
+    /**
+     * Enable revisions on create.
+     *
+     * @var array
+     */
+    protected $revisionCreationsEnabled = true;
 
     /**
      * The accessors to append to the model's array form.

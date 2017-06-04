@@ -61,9 +61,21 @@ class UsersManagementTest extends TestCase
     {
         $this->seedPermissions();
         $this->assertRoleExists('manage-users');
+        //Users
         $this->assertPermissionExists('see-manage-users-view');
         $this->assertPermissionExists('list-users');
+        $this->assertPermissionExists('create-users');
+        $this->assertPermissionExists('view-users');
+        $this->assertPermissionExists('edit-users');
+        $this->assertPermissionExists('delete-users');
+        //User invitations
+        $this->assertPermissionExists('see-manage-user-invitations-view');
+        $this->assertPermissionExists('list-user-invitations');
         $this->assertPermissionExists('send-user-invitations');
+        $this->assertPermissionExists('view-user-invitations');
+        $this->assertPermissionExists('edit-user-invitations');
+        $this->assertPermissionExists('delete-user-invitations');
+
     }
 
     /**
@@ -477,7 +489,10 @@ class UsersManagementTest extends TestCase
     public function users_without_authorization_cant_sent_user_invitations()
     {
         $this->signIn(null,'api');
+        config(['users.users_can_invite_other_users' => false]);
         $response = $this->post('/api/v1/management/users-invitations/send');
+        $response->assertStatus(403);
+        $response = $this->post('/api/v1/management/users-invitations');
         $response->assertStatus(403);
     }
 
@@ -495,9 +510,14 @@ class UsersManagementTest extends TestCase
         $response = $this->post_user_invitation([ 'email' => 'invalidformat']);
         $this->assertResponseValidationEmail($response,422,'The email must be a valid email address.');
 
-        $user = factory('App\User')->create();
+        $user = factory(User::class)->create();
         $response = $this->post_user_invitation([ 'email' => $user->email]);
         $this->assertResponseValidationEmail($response,422,'The email has already been taken.');
+
+        // Already existing emails don't throw and error on inser because we want then to resend email
+        $invitation = $this->createUserInvitations();
+        $response = $this->post_user_invitation([ 'email' => $invitation->email]);
+        $response->assertStatus(200);
 
         $response = $this->post_user_invitation(['email' => 'sdsfsdfsfdsdfe@dadddaasdasdaseqwerqwqqweqwqwewqeqweeqwsqweawedqweqweqweawerwaerwearwerw.com']);
         $this->assertResponseValidationEmail($response,422,'The email must be a valid email address.');
@@ -801,6 +821,135 @@ class UsersManagementTest extends TestCase
     }
 
     /**
+     * Check accept user invitation returns 404 without correct token
+     *
+     * @test
+     */
+    public function check_accept_user_invitation_returns_404_without_correct_token() {
+        $response = $this->get('/management/users/user-invitation-accept');
+        $response->assertStatus(404);
+        $response = $this->get('/management/users/user-invitation-accept?token=988213adsads');
+        $response->assertStatus(404);
+        $invitation = $this->createUserInvitations();
+        $user = $this->createUser();
+        $invitation->user()->associate($user);
+        $invitation->accept();
+        $response = $this->get('/management/users/user-invitation-accept?token=' . $invitation->token);
+        $response->assertStatus(404);
+    }
+
+    /**
+     * Check accept user invitation is public with correct_token.
+     *
+     * @test
+     */
+    public function check_accept_user_invitation_is_public() {
+        $invitation = $this->createUserInvitations();
+        $response = $this->get('/management/users/user-invitation-accept?token=' . $invitation->token);
+        $response->assertStatus(200);
+    }
+
+    /**
+     * Check create user via invitation.
+     *
+     * @test
+     */
+    public function check_create_user_via_invitation()
+    {
+        $invitation = $this->createUserInvitations();
+        $faker = Factory::create();
+        $this->json('POST', '/api/v1/management/user-invitations-accept',[
+            'name' => $name = $faker->name,
+            'token' => $invitation->token,
+            'email' => $invitation->email,
+            'password' => bcrypt($faker->password)
+        ])->assertStatus(200)
+        ->assertJson([
+            'created' => true
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'name' => $name,
+            'email' => $invitation->email,
+        ]);
+
+        $user = User::where('name' , $name)->where('email', $invitation->email)->first();
+        $this->assertDatabaseHas('user_invitations', [
+            'id' => $invitation->id,
+            'email' => $invitation->email,
+            'state' => 'accepted',
+            'user_id' => $user->id
+        ]);
+    }
+
+    /**
+     * Check create user via invitation validation errors.
+     *
+     * @test
+     */
+    public function check_create_user_via_invitation_validation_errors()
+    {
+        $this->json('POST', '/api/v1/management/user-invitations-accept',[])->assertStatus(422)
+            ->assertJson(
+                [
+                    'name' => ['The name field is required.'],
+                    'email' => ['The email field is required.'],
+                    'password' => ['The password field is required.'],
+                    'token' => ['The token field is required.']
+                ]
+            );
+
+        $this->json('POST', '/api/v1/management/user-invitations-accept',[
+            'name' => str_random(256)
+        ])->assertStatus(422)
+            ->assertJson(
+                [
+                    'name' => ['The name may not be greater than 255 characters.'],
+                    'email' => ['The email field is required.'],
+                    'password' => ['The password field is required.'],
+                    'token' => ['The token field is required.']
+                ]
+            );
+
+        $this->json('POST', '/api/v1/management/user-invitations-accept',[
+            'email' => 'incorrect_email'
+        ])->assertStatus(422)
+            ->assertJson(
+                [
+                    'name' => ['The name field is required.'],
+                    'email' => ['The email must be a valid email address.'],
+                    'password' => ['The password field is required.'],
+                    'token' => ['The token field is required.']
+                ]
+            );
+
+        $user = $this->createUser();
+        $this->json('POST', '/api/v1/management/user-invitations-accept',[
+            'email' => $user->email
+        ])->assertStatus(422)
+            ->assertJson(
+                [
+                    'name' => ['The name field is required.'],
+                    'email' => ['The email has already been taken.'],
+                    'password' => ['The password field is required.'],
+                    'token' => ['The token field is required.']
+                ]
+            );
+
+        $this->json('POST', '/api/v1/management/user-invitations-accept',[
+            'password' => '1234'
+        ])->assertStatus(422)
+            ->assertJson(
+                [
+                    'name' => ['The name field is required.'],
+                    'email' => ['The email field is required.'],
+                    'password' => ['The password must be at least 6 characters.'],
+                    'token' => ['The token field is required.']
+                ]
+            );
+    }
+
+    /**
      * Create user.
      *
      * @param null $num
@@ -838,6 +987,315 @@ class UsersManagementTest extends TestCase
             ]
         ]]);
     }
+
+    /**
+     * Public user invitations are shown depending on config.
+     *
+     * @test
+     */
+    public function public_user_invitations_are_shown_depending_on_config()
+    {
+        config(['users.users_can_invite_other_users' => false]);
+        $response = $this->get('/invite/user');
+        $response->assertStatus(404);
+
+        config(['users.users_can_invite_other_users' => true]);
+        $response = $this->get('/invite/user');
+        $response->assertStatus(200);
+    }
+
+
+    //**********************************************
+    //*    TRACKING USERS AND USER INVITATIONS     *
+    //**********************************************
+
+    /**
+     * Revisionable is enable in users.
+     *
+     *
+     * @test
+     */
+    public function revisionable_is_enabled_in_users()
+    {
+        $user = $this->createUser();
+        $this->assertDatabaseHas('revisions', [
+            'revisionable_type' => 'App\User',
+            'revisionable_id' => $user->id,
+            'user_id' => null,
+            'key' => 'created_at',
+        ]);
+    }
+
+    /**
+     * Revisionable is enabled in users creation by API.
+     *
+     *
+     * @test
+     */
+    public function revisionable_is_enable_in_users_creation_by_api()
+    {
+        $faker = Factory::create();
+        $this->signInAsUserManager('api');
+        $response = $this->post_user_creation($name = $faker->name,
+            $email = $faker->unique()->safeEmail, 'secret');
+        $response->assertStatus(200);
+        $user = User::where(['email' => $email])->first();
+        $this->assertDatabaseHas('revisions', [
+            'revisionable_type' => 'App\User',
+            'revisionable_id' => $user->id,
+            'user_id' => Auth::user()->id,
+            'key' => 'created_at',
+        ]);
+    }
+
+    /**
+     * Revisionable is enabled in user invitations.
+     *
+     * @test
+     */
+    public function revisionable_is_enabled_in_user_invitations()
+    {
+        $invitation = $this->createUserInvitations();
+        $this->assertDatabaseHas('revisions', [
+            'revisionable_type' => 'Acacha\Users\Models\UserInvitation',
+            'revisionable_id' => $invitation->id,
+            'user_id' => null,
+            'key' => 'created_at'
+        ]);
+    }
+
+    /**
+     * Revisionable is enabled in user invitations creation by API.
+     *
+     * @test
+     */
+    public function revisionable_is_enable_in_user_invitations_creation_by_api()
+    {
+        $faker = Factory::create();
+        $this->signInAsUserManager('api');
+        $response = $this->post_user_invitation([ 'email' => $email = $faker->unique()->safeEmail ] );
+        $response->assertStatus(200);
+        $invitation = UserInvitationModel::where(['email' => $email])->first();
+        $this->assertDatabaseHas('revisions', [
+            'revisionable_type' => 'Acacha\Users\Models\UserInvitation',
+            'revisionable_id' => $invitation->id,
+            'user_id' => Auth::user()->id,
+            'key' => 'created_at',
+        ]);
+    }
+
+    //***************************
+    //*    USERS DASHBOARD      *
+    //***************************
+
+    /**
+     * Unprivileged users don't see Dashboard.
+     *
+     * @test
+     */
+    public function unprivileged_users_dont_see_dashboard()
+    {
+        $response = $this->get('/management/users/dashboard');
+        $response->assertStatus(302);
+        $response->assertRedirect('/login');
+
+        $this->signIn();
+        $response = $this->get('/management/users/dashboard');
+        $response->assertStatus(403);
+    }
+
+    /**
+     * Check total users.
+     *
+     * @test
+     */
+    public function check_totalUsers()
+    {
+        $this->createUser(50);
+        $this->signInAsUserManager('api')
+            ->json('GET', '/api/v1/management/users-dashboard/totalUsers')
+            ->assertStatus(200)
+            ->assertSeeText('51');
+    }
+
+    /**
+     * Unprivileged users don't see user tracking.
+     *
+     * @test
+     */
+    public function unprivileged_users_dont_see_user_tracking()
+    {
+        $response = $this->get('/management/users/tracking');
+        $response->assertStatus(302);
+        $response->assertRedirect('/login');
+
+        $this->signIn();
+        $response = $this->get('/management/users/tracking');
+        $response->assertStatus(403);
+    }
+
+    /**
+     * Unprivileged users don't see user tracking_api.
+     *
+     * @test
+     */
+    public function unprivileged_users_dont_see_user_tracking_api()
+    {
+        $response = $this->json('GET', '/api/v1/revisionable/model/tracking');
+        $response->assertStatus(401);
+
+        $this->signIn(null,'api');
+        $response = $this->json('GET','/api/v1/revisionable/model/tracking?model=User');
+        $response->assertStatus(403);
+
+    }
+
+    /**
+     * Test user tracking api.
+     *
+     * @group caca10
+     * @test
+     */
+    public function user_tracking()
+    {
+        $this->signInAsUserManager('api');
+        $response = $this->json('GET','/api/v1/revisionable/model/tracking?model=\App\User');
+        $response->assertStatus(200);
+        $response->assertJson([]);
+
+        //TODO
+        $response->dump();
+//        $response->assertJson([]);
+//        $response->assertJsonStructure([ 'type',
+//          [ type: 'time-label', time: '11 Feb. 2014'],
+//          [ header: 'The user A USERNAME (id) has been created by USERNAME(id)' , time: '5 mins ago', icon: 'fa-user', iconBackground: 'bg-green' ],
+//          [ header: 'The user USERNAME (id) has been deleted by USERNAME(id)' , time: '12:04', icon: 'fa-user', iconBackground: 'bg-red'],
+//          [ type: 'time-label', time: '10 Feb. 2014'],
+//          [ header: 'The user USERNAME (id) has been deleted by USERNAME(id)' , time: '12:04', icon: 'fa-user', iconBackground: 'bg-red'],
+//          [ header: 'The user USERNAME (id) changed FIELDNAME of User from OLDVALUE to NEWVALUE' , time: '12:03', icon: 'fa-user', iconBackground: 'bg-yellow'],
+//          [ header: 'The user USERNAME (id) has been soft deleted by USERNAME(id)' , time: '12:02', icon: 'fa-user', iconBackground: 'bg-red'],
+//          [ header: 'Prova' , time: '12:05', icon: 'fa-comments', iconBackground: 'bg-yellow' ],
+//          [ header: 'sad ads asd asd asd ' , time: '1:05', iconBackground: 'bg-blue'],
+//          [ header: 'Nothing' , time: '1:03'],
+//          [ type: 'time-label', time: '09 Feb. 2014'],
+//          [ header: 'Header ', body: 'Here is and HTML header <b/>Negreta</b>' , time: '1:05', iconBackground: 'bg-blue'],
+//          [ header: 'Header with <b/>HTML</b> ', icon: 'fa-comments', body: 'Here is and HTML header <b/>Negreta</b>', footer: 'Footer que tal!' , time: '1:05', iconBackground: 'bg-blue'],
+//          [ header: 'Header ', body: 'Here is and HTML header <b/>Negreta</b>', footer: 'Footer with <b/>HTML</b>!' , time: '1:05', iconBackground: 'bg-blue', noBorder: true],
+//          [ header: 'Buttons on footer', body: 'Here is and HTML header <b/>Negreta</b>', footer: '<a class="btn btn-primary btn-xs">Read more</a> <a class="btn btn-danger btn-xs">Other</a>' , time: '1:05', iconBackground: 'bg-blue', noBorder: true]
+//        ]
+//        );
+
+//        ->seeJsonStructure([
+//        'name',
+//        'pet' => [
+//            'name', 'age'
+//        ]
+//    ]);
+
+//        [
+//          { type: 'time-label', time: '11 Feb. 2014'},
+//          { header: 'The user A USERNAME (id) has been created by USERNAME(id)' , time: '5 mins ago', icon: 'fa-user', iconBackground: 'bg-green' },
+//          { header: 'The user USERNAME (id) has been deleted by USERNAME(id)' , time: '12:04', icon: 'fa-user', iconBackground: 'bg-red'},
+//          { type: 'time-label', time: '10 Feb. 2014'},
+//          { header: 'The user USERNAME (id) has been deleted by USERNAME(id)' , time: '12:04', icon: 'fa-user', iconBackground: 'bg-red'},
+//          { header: 'The user USERNAME (id) changed FIELDNAME of User from OLDVALUE to NEWVALUE' , time: '12:03', icon: 'fa-user', iconBackground: 'bg-yellow'},
+//          { header: 'The user USERNAME (id) has been soft deleted by USERNAME(id)' , time: '12:02', icon: 'fa-user', iconBackground: 'bg-red'},
+//          { header: 'Prova' , time: '12:05', icon: 'fa-comments', iconBackground: 'bg-yellow' },
+//          { header: 'sad ads asd asd asd ' , time: '1:05', iconBackground: 'bg-blue'},
+//          { header: 'Nothing' , time: '1:03'},
+//          { type: 'time-label', time: '09 Feb. 2014'},
+//          { header: 'Header ', body: 'Here is and HTML header <b/>Negreta</b>' , time: '1:05', iconBackground: 'bg-blue'},
+//          { header: 'Header with <b/>HTML</b> ', icon: 'fa-comments', body: 'Here is and HTML header <b/>Negreta</b>', footer: 'Footer que tal!' , time: '1:05', iconBackground: 'bg-blue'},
+//          { header: 'Header ', body: 'Here is and HTML header <b/>Negreta</b>', footer: 'Footer with <b/>HTML</b>!' , time: '1:05', iconBackground: 'bg-blue', noBorder: true},
+//          { header: 'Buttons on footer', body: 'Here is and HTML header <b/>Negreta</b>', footer: '<a class="btn btn-primary btn-xs">Read more</a> <a class="btn btn-danger btn-xs">Other</a>' , time: '1:05', iconBackground: 'bg-blue', noBorder: true}
+//        ]
+//      }
+    }
+
+    /**
+     * Test user tracking api.
+     *
+     * @test
+     */
+    public function user_tracking_validation()
+    {
+        $this->signInAsUserManager('api');
+        $response = $this->json('GET','/api/v1/revisionable/model/tracking');
+        $this->assertResponseValidation($response,422,'model','The model field is required.');
+
+    }
+
+    //***************************
+    //*    USER PROFILE         *
+    //***************************
+
+    /**
+     * Test user profile is no public.
+     *
+     * @test
+     */
+    public function user_profile_is_not_public()
+    {
+        $response = $this->get('/user/profile');
+        $response->assertStatus(302);
+        $response->assertRedirect('/login');
+    }
+
+    /**
+     * Test user can see is own profile.
+     *
+     * @test
+     */
+    public function user_can_see_is_own_profile()
+    {
+        $this->signIn();
+        $response = $this->get('/user/profile');
+        $response->assertStatus(200);
+        $response->assertSeeText(Auth::user()->name);
+        $response->assertSeeText(Auth::user()->email);
+    }
+
+    /**
+     * Test a 404 is thrown when user profile of unexisting user is asked.
+     *
+     * @test
+     */
+    public function thrown_when_user_profile_of_unexisting_user_is_asked()
+    {
+        $this->signIn();
+        $response = $this->get('/user/profile/99999999999999999999999999999999999999999');
+        $response->assertStatus(404);;
+    }
+
+    /**
+     * Test user cannot see others profile.
+     *
+     * @test
+     */
+    public function user_cannot_see_others_profile()
+    {
+        $user = $this->createUser();
+        $this->signIn();
+        $response = $this->get('/user/profile/' . $user->id);
+        $response->assertStatus(403);
+    }
+
+    /**
+     * Test privileged user can see others profile.
+     *
+     * @test
+     */
+    public function privileged_user_can_see_others_profile()
+    {
+        $user = $this->createUser();
+        $this->signInAsUserManager();
+        $response = $this->get('/user/profile/' . $user->id);
+        $response->assertStatus(200);
+    }
+
+    //***************************
+    //*    HELPER FUNCTIONS     *
+    //***************************
 
     /**
      * Assert role exists in database.

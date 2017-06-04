@@ -1,8 +1,29 @@
 <template>
   <div class="user-list-custom-actions">
-    <button v-scroll-to="'#user-' + rowData.id + '-detail-row'" class="btn btn-sm btn-primary" :id="'show-user-' + rowData.id" @click="toogleShow('user',rowData)" :disabled="!laravel.user.can['view-users']"><i class="glyphicon glyphicon-zoom-in"></i></button>
-    <button v-scroll-to="'#user-' + rowData.id + '-detail-row'" class="btn btn-sm btn-success" :id="'edit-user-' + rowData.id" @click="toogleEdit('user',rowData)" :disabled="!laravel.user.can['edit-users']"><i class="glyphicon glyphicon-pencil"></i></button>
-    <button class="btn btn-sm btn-danger"  :id="'delete-user-' + rowData.id" @click="deleteResource('user',rowData)" :disabled="!laravel.user.can['delete-users']"><i class="glyphicon glyphicon-trash"></i></button>
+    <button title="Open user profile"
+            class="btn btn-sm btn-default" :id="'resend-user-invitation-' + rowData.id"
+            @click="goToUserProfile(rowData.id)" :disabled="!laravel.user.can['see-other-users-profile']">
+      <i class="fa fa-user"></i>
+    </button>
+    <button title="Reset password by email"
+            class="btn btn-sm btn-warning" :id="'reset-password-' + rowData.id"
+            @click="resetPassword()" :disabled="!laravel.user.can['create-users']">
+      <i class="fa fa-envelope-o"></i>
+    </button>
+    <button v-scroll-to="'#user-' + rowData.id + '-detail-row'" title="View"
+            class="btn btn-sm btn-primary" :id="'show-user-' + rowData.id"
+            @click="toogleShow('user',rowData)" :disabled="!laravel.user.can['view-users']">
+      <i class="glyphicon glyphicon-zoom-in"></i>
+    </button>
+    <button v-scroll-to="'#user-' + rowData.id + '-detail-row'"
+            class="btn btn-sm btn-success" :id="'edit-user-' + rowData.id" title="Edit"
+            @click="toogleEdit('user',rowData)" :disabled="!laravel.user.can['edit-users']">
+      <i class="glyphicon glyphicon-pencil"></i>
+    </button>
+    <button class="btn btn-sm btn-danger"  :id="'delete-user-' + rowData.id" title="Delete"
+            @click="deleteResource('user',rowData)" :disabled="!laravel.user.can['delete-users']">
+      <i class="glyphicon glyphicon-trash"></i>
+    </button>
   </div>
 </template>
 
@@ -15,7 +36,13 @@
   export default {
     mixins: [
       CustomActions
-    ]
+    ],
+    methods: {
+      goToUserProfile(id) {
+        console.log(id)
+        window.open('/user/profile/' + id)
+      }
+    }
   }
 </script>
 

@@ -15,6 +15,8 @@
             <span slot="title">Invitations Lists</span>
 
             <user-invitations-list-filter-bar></user-invitations-list-filter-bar>
+            <!--TODO-->
+            TODO: Global action here: delete, resend invitation
             <div class="table-responsive">
                 <vuetable ref="vuetable"
                           :api-url="apiUrl"

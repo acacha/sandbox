@@ -31,6 +31,11 @@ Vue.component('reset-password-form', require('./components/auth/ResetPasswordFor
 
 Vue.component('users-management', require('./components/users/UsersManagement.vue'))
 Vue.component('users-invitations', require('./components/users/invitations/UserInvitations.vue'))
+Vue.component('create-user', require('./components/users/CreateUser.vue'))
+Vue.component('create-user-via-invitation', require('./components/users/CreateUserViaInvitation.vue'))
+Vue.component('users-dashboard', require('./components/users/dashboard/UsersDashboard.vue'))
+Vue.component('model-tracking', require('./components/tracking/ModelTracking.vue'))
+Vue.component('user-profile', require('./components/users/profile/UserProfile.vue'))
 
 Vue.component(
   'passport-clients',

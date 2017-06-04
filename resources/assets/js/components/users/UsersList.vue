@@ -14,6 +14,8 @@
         <adminlte-vue-box color="success" :collapsed="isCollapsed" id="users-list-box" :loading="loading">
             <span slot="title">Users Lists</span>
             <users-list-filter-bar></users-list-filter-bar>
+            <!--TODO-->
+            TODO: Global action here: delete, reset password invitation
             <div class="table-responsive">
                 <vuetable ref="vuetable"
                           :api-url="apiUrl"

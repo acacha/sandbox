@@ -4,7 +4,10 @@
   "/css/bootstrap.css": "/css/bootstrap.css",
   "/css/adminlte-app.css": "/css/adminlte-app.css",
   "/css/toastr.css": "/css/toastr.css",
+  "/js/app-p-fullscreen.js": "/js/app-p-fullscreen.js",
   "/js/app-landing.js": "/js/app-landing.js",
+  "/js/app-fullscreen.js": "/js/app-fullscreen.js",
   "/css/all.css": "/css/all.css",
-  "/css/all-landing.css": "/css/all-landing.css"
+  "/css/all-landing.css": "/css/all-landing.css",
+  "/css/all-fullscreen.css": "/css/all-fullscreen.css"
 }

@@ -36,7 +36,9 @@ Menu::macro('sidebar', function () {
         #adminlte_menu
         ->add(Link::toUrl('proves', '<i class="fa fa-link"></i><span>Proves</span>'))
         ->add(Link::toUrl('tokens', '<i class="fa fa-link"></i><span>Tokens</span>'))
-        ->addIfCan('see-manage-users-view',Link::toUrl('/management/users', '<i class="fa fa-link"></i><span>Users</span>'))
+        ->addIfCan('see-manage-users-view',Link::toUrl('/management/users', '<i class="fa fa-user"></i><span>Users</span>'))
+        ->addIfCan('see-users-dashboard',Link::toUrl('/management/users/dashboard', '<i class="fa fa-link"></i><span>Users dashboard</span>'))
+        ->addIfCan('see-users-tracking',Link::toUrl('/management/users/tracking', '<i class="fa fa-link"></i><span>Users tracking</span>'))
         ->add(Menu::adminlteSeparator('SECONDARY MENU'))
         ->add(Menu::new()->prepend('<a href="#"><i class="fa fa-share"></i><span>Multilevel</span> <i class="fa fa-angle-left pull-right"></i></a>')
             ->addParentClass('treeview')

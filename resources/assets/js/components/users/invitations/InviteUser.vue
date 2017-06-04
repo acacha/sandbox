@@ -28,19 +28,10 @@
 <script>
 
   import Form from 'acacha-forms'
+  import InviteUser from '../../forms/mixins/Form'
 
   export default {
-    data: function () {
-      return {
-        form: new Form({ email: '' })
-      }
-    },
-    props: {
-      apiUrl: {
-        type: String,
-        default: 'http://localhost:8080/api/v1/management/users/invitations'
-      }
-    },
+    mixins: [InviteUser],
     methods: {
       submit () {
         const API_URL = this.apiUrl
@@ -53,13 +44,7 @@
             console.log('Invited error: ' + error)
             console.log(this.form.errors.all())
           })
-      },
-      clearErrors (name) {
-        this.form.errors.clear(name)
       }
-    },
-    mounted () {
-      this.form.clearOnSubmit = true
     }
   }
 

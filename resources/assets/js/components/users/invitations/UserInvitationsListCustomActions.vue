@@ -1,8 +1,31 @@
 <template>
   <div class="custom-actions">
-    <button v-scroll-to="'#user-invitation-' + rowData.id + '-detail-row'" class="btn btn-sm btn-primary" :id="'show-user-invitation-' + rowData.id" @click="toogleShow('user-invitations',rowData)" :disabled="!laravel.user.can['view-user-invitations']"><i class="glyphicon glyphicon-zoom-in"></i></button>
-    <button v-scroll-to="'#user-invitation-' + rowData.id + '-detail-row'" class="btn btn-sm btn-success" :id="'edit-user-invitation-' + rowData.id" @click="toogleEdit('user-invitations',rowData)" :disabled="!laravel.user.can['edit-user-invitations']"><i class="glyphicon glyphicon-pencil"></i></button>
-    <button class="btn btn-sm btn-danger" :id="'delete-user-invitation-' + rowData.id" @click="deleteResource('user-invitations',rowData)" :disabled="!laravel.user.can['delete-user-invitations']"><i class="glyphicon glyphicon-trash"></i></button>
+    <button title="Accept invitation and create User"
+            class="btn btn-sm btn-default" :id="'accept-user-invitation-' + rowData.id"
+            @click="createUser()" :disabled="!laravel.user.can['create-users']">
+      <i class="fa fa-user"></i>
+    </button>
+    <button title="Resend invitation"
+            class="btn btn-sm btn-warning" :id="'resend-user-invitation-' + rowData.id"
+            @click="resend()" :disabled="!laravel.user.can['send-user-invitations']">
+      <i class="fa fa-envelope-o"></i>
+    </button>
+    <button v-scroll-to="'#user-invitation-' + rowData.id + '-detail-row'" title="View"
+            class="btn btn-sm btn-primary" :id="'show-user-invitation-' + rowData.id"
+            @click="toogleShow('user-invitations',rowData)" :disabled="!laravel.user.can['view-user-invitations']">
+      <i class="glyphicon glyphicon-zoom-in"></i>
+    </button>
+    <button v-scroll-to="'#user-invitation-' + rowData.id + '-detail-row'" title="Edit"
+            class="btn btn-sm btn-success"
+            :id="'edit-user-invitation-' + rowData.id" @click="toogleEdit('user-invitations',rowData)"
+            :disabled="!laravel.user.can['edit-user-invitations']">
+      <i class="glyphicon glyphicon-pencil"></i>
+    </button>
+    <button class="btn btn-sm btn-danger" :id="'delete-user-invitation-' + rowData.id" title="Delete"
+            @click="deleteResource('user-invitations',rowData)"
+            :disabled="!laravel.user.can['delete-user-invitations']">
+      <i class="glyphicon glyphicon-trash"></i>
+    </button>
   </div>
 </template>
 

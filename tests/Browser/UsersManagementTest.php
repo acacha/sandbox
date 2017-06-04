@@ -405,8 +405,6 @@ class UsersManagementTest extends DuskTestCase
         });
     }
 
-
-
     /**
      * Execute action edit.
      *
@@ -439,7 +437,8 @@ class UsersManagementTest extends DuskTestCase
         $this->browse(function ($browser) use ($manager, $user, $confirm) {
             $this->login($browser,$manager);
             $browser->visit('/management/users')
-                ->press('#delete-user-' . $user->id)
+                ->driver->executeScript('document.getElementById("users-list-box").scrollIntoView();');
+            $browser->press('#delete-user-' . $user->id)
                 ->waitFor('div#confirm-user-deletion-modal')
                 ->assertSeeIn('div#confirm-user-deletion-modal','Are you sure you want to delete user?');
 
@@ -591,9 +590,6 @@ class UsersManagementTest extends DuskTestCase
                 ->assertVisible('#editable-field-user-invitation-' . $invitation->id . '-state div.input-group')
                 ->assertMissing('#editable-field-user-invitation-' . $invitation->id . '-state label i.fa-edit');
 
-//            'email' => 'sometimes|required|email|max:255|unique:users',
-//            'state' => 'sometimes|required|in:pending,accepted',
-
             //STATE
             $browser->type('#input-edit-user-invitation-' . $invitation->id . '-field-state' , '');
             $browser->pause(1000);
@@ -687,6 +683,211 @@ class UsersManagementTest extends DuskTestCase
     }
 
     /**
+     * Show create user via notification.
+     *
+     * @test
+     */
+    public function show_create_user_via_invitation()
+    {
+        dump(__FUNCTION__ );
+        $invitation = $this->createUserInvitations();
+        $this->browse(function ($browser) use ($invitation) {
+            $browser->visit('/management/users/user-invitation-accept?token=' . $invitation->token)
+                ->assertVisible('div#create-user-via-invitation')
+                ->assertSeeIn('div#create-user-via-invitation',
+                    'Thanks for accepting the user invitation ' . $invitation->email)
+                ->assertVisible('div#create-user-via-invitation div#add-user');
+        });
+    }
+
+    /**
+     * Fill create user via notification.
+     *
+     * @test
+     */
+    public function fill_create_user_via_invitation()
+    {
+        dump(__FUNCTION__ );
+        $invitation = $this->createUserInvitations();
+        $this->browse(function ($browser) use ($invitation) {
+            $faker = Factory::create();
+            $browser->visit('/management/users/user-invitation-accept?token=' . $invitation->token)
+                ->type('name', $faker->name)
+                ->press('Create')
+                ->waitFor('div#create-user-via-invitation-finishing')
+                ->pause(3000)
+                ->assertPathIs('/home');
+        });
+    }
+
+    /**
+     * Fill create user via notification validation.
+     *
+     * @test
+     */
+    public function fill_create_user_via_invitation_validation()
+    {
+        dump(__FUNCTION__ );
+        $invitation = $this->createUserInvitations();
+        $user = $this->createUsers();
+        $this->browse(function ($browser) use ($invitation, $user) {
+            $browser->visit('/management/users/user-invitation-accept?token=' . $invitation->token)
+                ->type('password','')
+                ->press('Create')
+                ->waitFor('span#errorForInputCreateUserName')
+                ->assertSeeIn('span#errorForInputCreateUserName','The name field is required')
+                ->waitFor('span#errorForInputCreateUserPassword')
+                ->assertSeeIn('span#errorForInputCreateUserPassword','The password field is required');
+        });
+    }
+
+    // ************************
+    // * Users Dashboard      *
+    // ************************
+
+    /**
+     * Users see users dashboard menu.
+     *
+     * @test
+     */
+    public function users_see_users_dashboard_menu()
+    {
+        dump(__FUNCTION__ );
+
+        $user = $this->createUsers();
+        $this->browse(function (Browser $browser) use ($user){
+            $this->login($browser,$user)
+                ->visit('/home')
+                ->assertDontSeeLink('Users dashboard');
+        });
+
+        $manager = $this->createUserManagerUser();
+
+        $this->browse(function (Browser $browser) use ($manager){
+            $this->login($browser,$manager)
+                ->visit('/home')
+                ->assertSeeLink('Users dashboard');
+        });
+    }
+
+    // ************************
+    // * Users Tracking       *
+    // ************************
+
+    /**
+     * Users see users tracking menu.
+     *
+     * @test
+     */
+    public function users_see_users_tracking_menu()
+    {
+        dump(__FUNCTION__ );
+
+        $user = $this->createUsers();
+        $this->browse(function (Browser $browser) use ($user){
+            $this->login($browser,$user)
+                ->visit('/home')
+                ->assertDontSeeLink('Users tracking');
+        });
+
+        $manager = $this->createUserManagerUser();
+
+        $this->browse(function (Browser $browser) use ($manager){
+            $this->login($browser,$manager)
+                ->visit('/home')
+                ->assertSeeLink('Users tracking');
+        });
+    }
+
+    // ************************
+    // * Users Profile        *
+    // ************************
+
+    /**
+     * Users profile is not public.
+     *
+     * @group caca45
+     * @test
+     */
+    public function user_profile_is_not_public()
+    {
+        dump(__FUNCTION__ );
+
+        $this->browse(function (Browser $browser){
+            $browser->visit('/user/profile')
+                ->assertPathIs('/login');
+        });
+
+    }
+
+    /**
+     * Authorized users can see other users profile.
+     *
+     * @group caca568
+     * @test
+     */
+    public function authorized_users_can_see_other_users_profile()
+    {
+        dump(__FUNCTION__ );
+
+        $manager = $this->createUserManagerUser();
+        $user = $this->createUsers();
+        $this->browse(function (Browser $browser) use ($manager, $user){
+            $this->login($browser,$manager);
+            $browser->visit('/user/profile/' . $user->id)
+                ->assertSee($user->email)
+                ->assertSee($user->name);
+        });
+    }
+
+    /**
+     * Users can see is own user profile.
+     *
+     * @test
+     */
+    public function users_can_see_is_own_profile()
+    {
+        dump(__FUNCTION__ );
+
+        $user = $this->createUsers();
+        $this->browse(function (Browser $browser) use ($user){
+            $this->login($browser,$user);
+            $browser->visit('/user/profile')
+                ->assertSee($user->email)
+                ->assertSee($user->name);
+        });
+        $this->browse(function (Browser $browser) use ($user){
+            $this->login($browser,$user);
+            $browser->visit('/user/profile/' . $user->id)
+                ->assertSee($user->email)
+                ->assertSee($user->name);
+        });
+
+    }
+
+    /**
+     * User menu can open user profile
+     * @group shita
+     * @test
+     */
+    public function user_menu_can_open_user_profile()
+    {
+        dump(__FUNCTION__ );
+
+        $user = $this->createUsers();
+        $this->browse(function (Browser $browser) use ($user){
+            $this->login($browser,$user);
+            $browser->visit('/home')
+                ->click('#user_menu')
+                ->clickLink('Profile')
+                ->assertPathIs('/user/profile')
+                ->assertSee($user->email)
+                ->assertSee($user->name);
+        });
+
+    }
+
+    /**
      * ----------------------------------------------------
      * Private/helper test functions for user invitations.
      * ----------------------------------------------------
@@ -745,6 +946,8 @@ class UsersManagementTest extends DuskTestCase
         $this->browse(function ($browser) use ($manager, $user, $confirm) {
             $this->login($browser,$manager);
             $browser->visit('/management/users')
+                ->driver->executeScript('document.getElementById("users-list-box").scrollIntoView();');
+            $browser
                 ->press('#delete-user-' . $user->id)
                 ->waitFor('div#confirm-user-deletion-modal')
                 ->assertSeeIn('div#confirm-user-deletion-modal','Are you sure you want to delete user?');
