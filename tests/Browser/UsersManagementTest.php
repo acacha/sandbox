@@ -301,7 +301,52 @@ class UsersManagementTest extends DuskTestCase
             $browser->visit('/management/users?expand')
                 ->assertVisible('[id^=delete-user-]:disabled')
                 ->assertVisible('[id^=edit-user-]:disabled')
-                ->assertVisible('[id^=show-user-]:disabled');
+                ->assertVisible('[id^=show-user-]:disabled')
+                ->assertVisible('[id^=reset-password-]:disabled')
+                ->assertVisible('[id^=open-user-profile]:disabled');
+        });
+    }
+
+    /**
+     * Users lists action "show profile" works.
+     *
+     * @test
+     */
+    public function users_list_action_show_profile_works()
+    {
+        dump(__FUNCTION__ );
+
+        $manager = $this->createUserManagerUser();
+        $user = $this->createUsers();
+        $this->browse(function ($browser) use ($manager, $user) {
+            $this->login($browser,$manager);
+            $browser->visit('/management/users?expand')
+                ->driver->executeScript('document.getElementById("users-list-box").scrollIntoView();');
+            $browser->press('button#open-user-profile-' . $user->id)
+                ->pause(1000)
+                ->assertSee($user->name)
+                ->assertSee($user->email);
+        });
+    }
+
+    /**
+     * Users lists action "send reset password" works.
+     *
+     * @group esborrar
+     * @test
+     */
+    public function users_list_action_reset_password_profile_works()
+    {
+        dump(__FUNCTION__ );
+
+        $manager = $this->createUserManagerUser();
+        $user = $this->createUsers();
+        $this->browse(function ($browser) use ($manager, $user) {
+            $this->login($browser,$manager);
+            $browser->visit('/management/users?expand')
+                ->driver->executeScript('document.getElementById("users-list-box").scrollIntoView();');
+            $browser->press('button#reset-password-' . $user->id)
+                ->waitFor('div#users-list-result');
         });
     }
 
@@ -866,7 +911,8 @@ class UsersManagementTest extends DuskTestCase
     }
 
     /**
-     * User menu can open user profile
+     * User menu can open user profile.
+     *
      * @group shita
      * @test
      */

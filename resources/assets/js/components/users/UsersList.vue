@@ -16,6 +16,11 @@
             <users-list-filter-bar></users-list-filter-bar>
             <!--TODO-->
             TODO: Global action here: delete, reset password invitation
+
+            <adminlte-vue-alert color="success" title="Done!" v-if="showResult" id="users-list-result">
+                {{ result }}
+            </adminlte-vue-alert>
+
             <div class="table-responsive">
                 <vuetable ref="vuetable"
                           :api-url="apiUrl"
@@ -71,6 +76,8 @@
     },
     data() {
       return {
+        showResult: false,
+        result: '',
         columns: [
           {
             name: '__sequence',
@@ -138,6 +145,10 @@
       },
       'reload-user-list' () {
         Vue.nextTick(() => this.refresh())
+      },
+      'show-result' (result) {
+        this.showResult = true
+        this.result = result
       }
     }
   }

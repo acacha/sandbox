@@ -1,7 +1,7 @@
 <template>
   <div class="user-list-custom-actions">
     <button title="Open user profile"
-            class="btn btn-sm btn-default" :id="'resend-user-invitation-' + rowData.id"
+            class="btn btn-sm btn-default" :id="'open-user-profile-' + rowData.id"
             @click="goToUserProfile(rowData.id)" :disabled="!laravel.user.can['see-other-users-profile']">
       <i class="fa fa-user"></i>
     </button>
@@ -39,8 +39,25 @@
     ],
     methods: {
       goToUserProfile(id) {
-        console.log(id)
         window.open('/user/profile/' + id)
+      },
+      resetPassword() {
+        var component = this
+        let apiURL = '/api/v1/management/users/send/reset-password-email'
+        axios.post( apiURL , {
+          email: this.rowData.email
+        })
+          .then(function (response) {
+            console.log('OK!')
+            console.log(response);
+            let result = 'Password reset email sent to user ' + component.rowData.name + '.'
+            component.$events.fire('show-result',result)
+          })
+          .catch(function (error) {
+            console.log('ERROR!')
+            console.log(error);
+          });
+
       }
     }
   }
