@@ -5,6 +5,8 @@ import Vuetable from 'vuetable-2/src/components/Vuetable'
 import VuetablePagination from 'vuetable-2/src/components/VuetablePagination'
 import VuetablePaginationInfo from 'vuetable-2/src/components/VuetablePaginationInfo'
 
+import ConfirmDialog from '../ConfirmDialog.vue'
+
 import VueEvents from 'vue-events'
 Vue.use(VueEvents)
 
@@ -26,13 +28,23 @@ export default {
   components: {
     Vuetable,
     VuetablePagination,
-    VuetablePaginationInfo
+    VuetablePaginationInfo,
+    ConfirmDialog
   },
   data () {
     return {
+      showResult: false,
+      result: '',
+      store: store,
+      dialogHasToBeShown: false,
       isCollapsed: this.collapsed,
       loading: false,
-      deleting: false,
+      performingAction: false,
+      confirmDialogTitle: 'Confirm action',
+      confirmDialogBody: 'Are you sure you want to execute this action?',
+      confirmDialogText: 'Delete',
+      currentData: null,
+      confirmDialogType: null,
       css: {
         table: {
           tableClass: 'table table-bordered table-striped table-hover',
@@ -60,29 +72,21 @@ export default {
     toogle () {
       $('#' + this.resource + '-list-box').toggleBox()
     },
-    deleteResource () {
-      this.deleting = true
-      var id = document.querySelector(
-        'div#' + this.resource + '-list div.modal div.modal-footer input#' + this.resource + '_id').value
-
-      var component = this
-      axios.delete(this.apiUrl + '/' + id)
-        .then(function (response) {
-          component.$refs.vuetable.reload()
-          $('#confirm-' + component.resource + '-deletion-modal').modal('hide')
-          component.deleting = false
-        })
-        .catch(function (error) {
-          component.deleting = false
-        })
+    showDialog (type, dialog, data) {
+      if (this.checkDialogType(type)) {
+        this.confirmDialogTitle = dialog.title
+        this.confirmDialogBody = dialog.body
+        this.confirmDialogText = dialog.confirmText
+        this.currentData = data
+        this.confirmDialogType = type
+        this.dialogHasToBeShown = true
+      }
     },
-    showDeleteDialog (id) {
-      var component = this
-      $('#confirm-' + this.resource + '-deletion-modal').on('show.bs.modal', function (event) {
-        var modal = $(this)
-        modal.find('.modal-footer input#' + component.resource + '_id').val(id)
-      })
-      $('#confirm-' + component.resource + '-deletion-modal').modal('show')
+    onHide () {
+      this.dialogHasToBeShown = false
+    },
+    onConfirm () {
+      this.executePostConfirmAction()
     },
     reload () {
       this.$refs.vuetable.reload()

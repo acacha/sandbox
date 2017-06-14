@@ -5,6 +5,8 @@ namespace Tests\Browser;
 use Acacha\Users\Models\UserInvitation;
 use App\User;
 use Faker\Factory;
+use Tests\Browser\Traits\CanLogin;
+use Tests\Browser\Traits\InteractsWithUsers;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -16,7 +18,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
  */
 class UsersManagementTest extends DuskTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseMigrations, InteractsWithUsers, CanLogin;
 
     /**
      * Authorized users see users management menu entry.
@@ -302,7 +304,7 @@ class UsersManagementTest extends DuskTestCase
                 ->assertVisible('[id^=delete-user-]:disabled')
                 ->assertVisible('[id^=edit-user-]:disabled')
                 ->assertVisible('[id^=show-user-]:disabled')
-                ->assertVisible('[id^=reset-password-]:disabled')
+                ->assertVisible('[id^=reset-user-password-]:disabled')
                 ->assertVisible('[id^=open-user-profile]:disabled');
         });
     }
@@ -332,10 +334,9 @@ class UsersManagementTest extends DuskTestCase
     /**
      * Users lists action "send reset password" works.
      *
-     * @group esborrar
      * @test
      */
-    public function users_list_action_reset_password_profile_works()
+    public function users_list_action_send_reset_password_works()
     {
         dump(__FUNCTION__ );
 
@@ -345,8 +346,67 @@ class UsersManagementTest extends DuskTestCase
             $this->login($browser,$manager);
             $browser->visit('/management/users?expand')
                 ->driver->executeScript('document.getElementById("users-list-box").scrollIntoView();');
-            $browser->press('button#reset-password-' . $user->id)
-                ->waitFor('div#users-list-result');
+            $browser->press('button#reset-user-password-' . $user->id)
+                ->waitFor('div#users-list-confirm-modal');
+        });
+    }
+
+    /**
+     * Test massive send reset password works.
+     * @group failing
+     * @test
+     */
+    public function test_massive_send_reset_password_works()
+    {
+        dump(__FUNCTION__ );
+
+        $manager = $this->createUserManagerUser();
+        $users = $this->createUsers(3);
+        $this->browse(function ($browser) use ($manager, $users) {
+            $this->login($browser,$manager);
+            $browser->visit('/management/users?expand')
+                ->driver->executeScript('document.getElementById("users-list-box").scrollIntoView();');
+            $browser->check("div#user-list input[type='checkbox']:first-child");
+            $browser->uncheck("div#user-list tbody.vuetable-body input[type='checkbox']:first-child")
+                ->press('button#massive-send-reset-passwords')
+                ->waitFor('div#users-list-confirm-modal')
+                ->assertSeeIn('div#users-list-confirm-modal','Are you sure you want to send an email to multiple users?');
+
+            $browser->press('Send');
+
+            $browser->waitFor('div#users-list-result')
+                ->assertSeeIn('div#users-list-result','Password reset email sent to user all the selected users.');
+        });
+    }
+
+    /**
+     * Test massive delete action.
+     *
+     * @test
+     */
+    public function test_massive_delete_action()
+    {
+        dump(__FUNCTION__ );
+
+        $manager = $this->createUserManagerUser();
+        $users = $this->createUsers(3);
+        $this->browse(function ($browser) use ($manager, $users) {
+            $this->login($browser,$manager);
+            $browser->visit('/management/users?expand')
+                ->driver->executeScript('document.getElementById("users-list-box").scrollIntoView();');
+            $browser->check("div#user-list input[type='checkbox']:first-child");
+            $browser->uncheck("div#user-list tbody.vuetable-body input[type='checkbox']:first-child")
+            ->press('button#massive-remove-users')
+            ->waitFor('div#users-list-confirm-modal')
+            ->assertSeeIn('div#users-list-confirm-modal','Are you sure you want to delete multiple users?');
+
+            $browser->press('Delete');
+            foreach ($users as $user) {
+                $browser->waitUntilMissing('#delete-user-' . $user->id);
+            }
+
+            $browser->waitFor('div#users-list-result')
+                ->assertSeeIn('div#users-list-result','Selected users removed.');
         });
     }
 
@@ -355,17 +415,6 @@ class UsersManagementTest extends DuskTestCase
      * Private/helper test functions for users.
      * ----------------------------------------
      */
-
-    /**
-     * Create users.
-     *
-     * @param null $number
-     * @return mixed
-     */
-    private function createUsers($number = null)
-    {
-        return $this->createModels(User::class,$number);
-    }
 
     /**
      * Fill create user form.
@@ -484,11 +533,11 @@ class UsersManagementTest extends DuskTestCase
             $browser->visit('/management/users')
                 ->driver->executeScript('document.getElementById("users-list-box").scrollIntoView();');
             $browser->press('#delete-user-' . $user->id)
-                ->waitFor('div#confirm-user-deletion-modal')
-                ->assertSeeIn('div#confirm-user-deletion-modal','Are you sure you want to delete user?');
+                ->waitFor('div#users-list-confirm-modal')
+                ->assertSeeIn('div#users-list-confirm-modal','Are you sure you want to delete user?');
 
                 if ($confirm) {
-                    $browser->press('#confirm-user-deletion-button');
+                    $browser->press('Delete');
                     $browser->waitUntilMissing('#delete-user-' . $user->id);
                 }
         });
@@ -680,12 +729,11 @@ class UsersManagementTest extends DuskTestCase
     {
         dump(__FUNCTION__ );
 
-        $user = $this->execute_delete_user_invitation();
+        $invitation = $this->execute_delete_user_invitation();
 
-        $this->assertDatabaseMissing('users', [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email
+        $this->assertDatabaseMissing('user_invitations', [
+            'id' => $invitation->id,
+            'email' => $invitation->email
         ]);
     }
 
@@ -698,12 +746,11 @@ class UsersManagementTest extends DuskTestCase
     {
         dump(__FUNCTION__ );
 
-        $user = $this->execute_delete_user_invitation(false);
+        $invitation = $this->execute_delete_user_invitation(false);
 
-        $this->assertDatabaseHas('users', [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email
+        $this->assertDatabaseHas('user_invitations', [
+            'id' => $invitation->id,
+            'email' => $invitation->email
         ]);
     }
 
@@ -851,7 +898,6 @@ class UsersManagementTest extends DuskTestCase
     /**
      * Users profile is not public.
      *
-     * @group caca45
      * @test
      */
     public function user_profile_is_not_public()
@@ -868,7 +914,6 @@ class UsersManagementTest extends DuskTestCase
     /**
      * Authorized users can see other users profile.
      *
-     * @group caca568
      * @test
      */
     public function authorized_users_can_see_other_users_profile()
@@ -913,7 +958,6 @@ class UsersManagementTest extends DuskTestCase
     /**
      * User menu can open user profile.
      *
-     * @group shita
      * @test
      */
     public function user_menu_can_open_user_profile()
@@ -988,23 +1032,23 @@ class UsersManagementTest extends DuskTestCase
      */
     private function execute_delete_user_invitation($confirm = true) {
         $manager = $this->createUserManagerUser();
-        $user = $this->createUsers();
-        $this->browse(function ($browser) use ($manager, $user, $confirm) {
+        $invitation = $this->createUserInvitations();
+        $this->browse(function ($browser) use ($manager, $invitation, $confirm) {
             $this->login($browser,$manager);
-            $browser->visit('/management/users')
-                ->driver->executeScript('document.getElementById("users-list-box").scrollIntoView();');
+            $browser->visit('/management/users?expand')
+                ->driver->executeScript('document.getElementById("user-invitations-list-box").scrollIntoView();');
             $browser
-                ->press('#delete-user-' . $user->id)
-                ->waitFor('div#confirm-user-deletion-modal')
-                ->assertSeeIn('div#confirm-user-deletion-modal','Are you sure you want to delete user?');
+                ->press('#delete-user-invitation-' . $invitation->id)
+                ->waitFor('div#user-invitations-list-confirm-modal')
+                ->assertSeeIn('div#user-invitations-list-confirm-modal','Are you sure you want to delete user invitation?');
 
             if ($confirm) {
-                $browser->press('#confirm-user-deletion-button');
-                $browser->waitUntilMissing('#delete-user-' . $user->id);
+                $browser->press('Delete');
+                $browser->waitUntilMissing('#delete-user-invitation-' . $invitation->id);
             }
         });
 
-        return $user;
+        return $invitation;
     }
 
     /**
@@ -1063,63 +1107,6 @@ class UsersManagementTest extends DuskTestCase
             }
 
         });
-    }
-
-    /**
-     * ----------------------------------------------------
-     * Global Helpers.
-     * ----------------------------------------------------
-     */
-
-    /**
-     * Login.
-     *
-     * @param $browser
-     * @param $user
-     */
-    private function login($browser,$user) {
-        $browser->loginAs($user);
-        view()->share('signedIn',true);
-        view()->share('user', $user);
-        return $browser;
-    }
-
-    /**
-     * Logout.
-     */
-    private function logout()
-    {
-        $this->browse(function (Browser $browser) {
-            $browser->visit('/home')
-                ->click('#user_menu')
-                ->click('#logout')
-                ->pause(2000);
-        });
-    }
-
-    /**
-     * Create a user with manage users permission.
-     *
-     * @return mixed
-     */
-    private function createUserManagerUser()
-    {
-        $user = $this->createUsers();
-        initialize_users_management_permissions();
-        $user->assignRole('manage-users');
-        return $user;
-    }
-
-    /**
-     * Create models.
-     *
-     * @param $model
-     * @param null $number
-     * @return mixed
-     */
-    private function createModels($model, $number = null) {
-        $model = factory($model , $number)->create();
-        return $model;
     }
 
 }

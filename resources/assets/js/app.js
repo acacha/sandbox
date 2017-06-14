@@ -18,6 +18,16 @@ window.Vue = require('vue')
 import AdminlteVue from 'adminlte-vue'
 Vue.use(AdminlteVue)
 
+import VueEcho from 'vue-echo'
+
+Vue.use(VueEcho, {
+  broadcaster: 'pusher',
+  key: '785d0fcd5c20c0256313',
+  cluster: 'eu',
+  encrypted: true,
+  namespace: 'Acacha.Users.Events'
+})
+
 // Use trans function in Vue (equivalent to trans() Laravel Translations helper). See htmlheader.balde.php partial.
 Vue.prototype.trans = (key) => {
   return _.get(window.trans, key, key)
@@ -36,6 +46,9 @@ Vue.component('create-user-via-invitation', require('./components/users/CreateUs
 Vue.component('users-dashboard', require('./components/users/dashboard/UsersDashboard.vue'))
 Vue.component('model-tracking', require('./components/tracking/ModelTracking.vue'))
 Vue.component('user-profile', require('./components/users/profile/UserProfile.vue'))
+
+Vue.component('users-migration-dashboard', require('./components/users/migration/UsersMigrationDashboard.vue'))
+Vue.component('users-migration', require('./components/users/migration/UsersMigration.vue'))
 
 Vue.component(
   'passport-clients',

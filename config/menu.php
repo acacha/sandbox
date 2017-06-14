@@ -34,6 +34,7 @@ Menu::macro('sidebar', function () {
 //        ->url('http://www.google.com', 'Google')
         ->add(Menu::adminlteSeparator('Acacha Adminlte'))
         #adminlte_menu
+        ->addIfCan('migrate-users',Link::toUrl('management/users-migration', '<i class="fa fa-link"></i><span>Users migration</span>'))
         ->add(Link::toUrl('proves', '<i class="fa fa-link"></i><span>Proves</span>'))
         ->add(Link::toUrl('tokens', '<i class="fa fa-link"></i><span>Tokens</span>'))
         ->addIfCan('see-manage-users-view',Link::toUrl('/management/users', '<i class="fa fa-user"></i><span>Users</span>'))

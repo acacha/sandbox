@@ -8,10 +8,14 @@ use Acacha\Users\Mail\UserInvitation;
 use Acacha\Users\Models\UserInvitation as UserInvitationModel;
 use App\User;
 use Auth;
+use DB;
 use Event;
 use Faker\Factory;
+use Hash;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Mail;
+use Notification;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -410,6 +414,18 @@ class UsersManagementTest extends TestCase
     }
 
     /**
+     * Delete multiple users.
+     *
+     * @param $ids
+     * @return \Illuminate\Foundation\Testing\TestResponse
+     */
+    private function delete_multiple_users($ids) {
+        return $this->json('POST','api/v1/management/users-massive',[
+            'ids' => $ids
+        ] );
+    }
+
+    /**
      * Unauthenticated users cannot delete users.
      *
      * @test
@@ -435,7 +451,7 @@ class UsersManagementTest extends TestCase
      *
      * @test
      */
-    public function api_delete_user()
+    public function api_deletes_user()
     {
         $user = $this->createUser();
 
@@ -452,6 +468,145 @@ class UsersManagementTest extends TestCase
             'id' => $user->id
         ]);
 
+    }
+
+    /**
+     * Api deletes multiple users.
+     *
+     * @test
+     */
+    public function api_deletes_multiple_users()
+    {
+        $users = $this->createUser(3);
+        $ids = $users->pluck('id')->toArray();
+        $this->signInAsUserManager('api');
+
+        $response = $this->delete_multiple_users($ids);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'deleted' => true,
+            ]);
+
+        foreach ($ids as $userId) {
+            $this->assertDatabaseMissing('users', [
+                'id' => $userId
+            ]);
+        }
+    }
+
+    /**
+     * Api deletes multiple users validation.
+     *
+     * @test
+     */
+    public function api_deletes_multiple_users_validation()
+    {
+        $this->signInAsUserManager('api');
+
+        $this->json('POST','api/v1/management/users-massive')
+            ->assertStatus(422)->assertExactJson([
+                'ids' => [
+                    0 => 'The ids field is required.'
+                ]
+            ]);
+    }
+
+    /**
+     * Api send reset password email.
+     * @group prova
+     * @test
+     */
+    public function api_sent_reset_password_email()
+    {
+        $user = $this->createUser();
+        $this->signInAsUserManager('api');
+
+        Notification::fake();
+
+        $this->json('POST','api/v1/management/users/send/reset-password-email',
+            [ 'email' => $user->email])
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('password_resets', [
+            'email' => $user->email
+        ]);
+
+        $token = DB::table('password_resets')
+            ->select('token')
+            ->where('email', $user->email)
+            ->get()->first()->token;
+
+        Notification::assertSentTo(
+            $user,
+            ResetPassword::class,
+            function ($notification, $channels) use ($token) {
+                return Hash::check($notification->token, $token);
+            }
+        );
+    }
+
+    /**
+     * Api send reset password email validation.
+     *
+     * @test
+     */
+    public function api_sent_reset_password_email_validation()
+    {
+        $this->signInAsUserManager('api');
+
+        $this->json('POST','api/v1/management/users/send/reset-password-email')
+            ->assertStatus(422)->assertExactJson([
+                'email' => [
+                    0 => 'The email field is required.'
+                ]
+            ]);
+
+        $this->json('POST','api/v1/management/users/send/reset-password-email',[
+            'email' => 'incorrectemail'])
+            ->assertStatus(422)->assertExactJson([
+                'email' => [
+                    0 => 'The email must be a valid email address.'
+                ]
+            ]);
+    }
+
+    /**
+     * Api send massive reset password email.
+     *
+     * @group prova
+     * @test
+     */
+    public function api_sent_massive_reset_password_email()
+    {
+        $users = $this->createUser(3);
+        $this->signInAsUserManager('api');
+
+        $ids = $users->pluck('id');
+
+        Notification::fake();
+
+        $this->json('POST','api/v1/management/users/send/reset-password-email/massive',
+            [ 'ids' => $ids])
+            ->assertStatus(200);
+
+        foreach ($users as $user) {
+            $this->assertDatabaseHas('password_resets', [
+                'email' => $user->email
+            ]);
+            $token = DB::table('password_resets')
+                ->select('token')
+                ->where('email', $user->email)
+                ->get()->first()->token;
+
+            Notification::assertSentTo(
+                $user,
+                ResetPassword::class,
+                function ($notification, $channels) use ($token) {
+                    return Hash::check($notification->token, $token);
+                }
+            );
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 <template>
-    <div class="filter-bar" id="users-list-filter-bar">
+    <div class="filter-bar pull-left" id="users-list-filter-bar">
       <form class="form-inline">
         <div class="form-group">
           <label>Search for:</label>

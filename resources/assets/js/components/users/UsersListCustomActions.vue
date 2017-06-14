@@ -6,8 +6,8 @@
       <i class="fa fa-user"></i>
     </button>
     <button title="Reset password by email"
-            class="btn btn-sm btn-warning" :id="'reset-password-' + rowData.id"
-            @click="resetPassword()" :disabled="!laravel.user.can['create-users']">
+            class="btn btn-sm btn-warning" :id="'reset-user-password-' + rowData.id"
+            @click="confirmDialog('reset-user-password',rowData)" :disabled="!laravel.user.can['reset-user-password']">
       <i class="fa fa-envelope-o"></i>
     </button>
     <button v-scroll-to="'#user-' + rowData.id + '-detail-row'" title="View"
@@ -21,7 +21,7 @@
       <i class="glyphicon glyphicon-pencil"></i>
     </button>
     <button class="btn btn-sm btn-danger"  :id="'delete-user-' + rowData.id" title="Delete"
-            @click="deleteResource('user',rowData)" :disabled="!laravel.user.can['delete-users']">
+            @click="confirmDialog('delete-user',rowData)" :disabled="!laravel.user.can['delete-users']">
       <i class="glyphicon glyphicon-trash"></i>
     </button>
   </div>
@@ -32,8 +32,14 @@
   Vue.use(VueScrollTo)
 
   import CustomActions from './mixins/CustomActions'
+  import store from './Store';
 
   export default {
+    data() {
+      return {
+        store : store
+      }
+    },
     mixins: [
       CustomActions
     ],
@@ -41,23 +47,26 @@
       goToUserProfile(id) {
         window.open('/user/profile/' + id)
       },
-      resetPassword() {
-        var component = this
-        let apiURL = '/api/v1/management/users/send/reset-password-email'
-        axios.post( apiURL , {
-          email: this.rowData.email
-        })
-          .then(function (response) {
-            console.log('OK!')
-            console.log(response);
-            let result = 'Password reset email sent to user ' + component.rowData.name + '.'
-            component.$events.fire('show-result',result)
-          })
-          .catch(function (error) {
-            console.log('ERROR!')
-            console.log(error);
-          });
-
+      getDialogByType(type) {
+        switch(type) {
+          case 'delete-user':
+            return this.getDialogForDeleteUser()
+          case 'reset-user-password':
+            return this.getDialogForResetUserPassword()
+        }
+      },
+      getDialogForDeleteUser() {
+        return {
+          title: 'Confirm user deletion',
+          body: 'Are you sure you want to delete user?'
+        }
+      },
+      getDialogForResetUserPassword() {
+        return {
+          title: 'Confirm user password reset by email',
+          body: 'Are you sure you want to send and email to the user?',
+          confirmText: 'Send'
+        }
       }
     }
   }

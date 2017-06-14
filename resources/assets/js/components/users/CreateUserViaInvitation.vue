@@ -57,18 +57,16 @@
       finish(password) {
         this.finishing = true
         var component = this
-        window.setTimeout( function() {
-          axios.post('/login', {
-            email: component.email,
-            password: password
-          })
-            .then(function (response) {
-              window.location = component.urlToRedirect
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }, 2000 );
+        axios.post('/login', {
+          email: component.email,
+          password: password
+        })
+        .then(function (response) {
+          window.location = component.urlToRedirect
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
       }
     }
   }

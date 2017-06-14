@@ -1,4 +1,7 @@
+import Dialog from './Dialog'
+
 export default {
+  mixins: [Dialog],
   props: {
     rowData: {
       type: Object,
@@ -14,14 +17,11 @@ export default {
     }
   },
   methods: {
-    deleteResource (name,data) {
-      this.$events.fire('show-delete-' + name + '-dialog', data.id)
+    toogleShow (name, data) {
+      this.$events.fire('toogle-show-' + name, data.id)
     },
-    toogleShow(name,data) {
-      this.$events.fire('toogle-show-' + name , data.id)
-    },
-    toogleEdit(name,data) {
-      this.$events.fire('toogle-edit-' + name , data.id)
+    toogleEdit (name, data) {
+      this.$events.fire('toogle-edit-' + name, data.id)
     }
   }
 }

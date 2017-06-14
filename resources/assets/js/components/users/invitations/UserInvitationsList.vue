@@ -1,23 +1,30 @@
 <template>
     <div id="user-invitation-list">
 
-        <adminlte-vue-modal id="confirm-user-invitation-deletion-modal" color="danger">
-            <h4 slot="title">Confirm User Invitation deletion</h4>
-            <p>Are you sure you want to delete user invitation?</p>
-            <div class="modal-footer" slot="footer">
-                <input type="hidden" id="user-invitation_id" value=""/>
-                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline" id="confirm-user-invitation-deletion-button" @click="deleteResource()"><i v-if="this.deleting" id="deleting-user-spinner" class="fa fa-refresh fa-spin"></i>  Delete</button>
-            </div>
-        </adminlte-vue-modal>
-       
+        <confirm-dialog
+                id="user-invitations-list-confirm-modal"
+                :show="dialogHasToBeShown"
+                :acting="performingAction"
+                :title="confirmDialogTitle"
+                :body="confirmDialogBody"
+                @hide="onHide"
+                @confirm="onConfirm"
+                :confirm-text="confirmDialogText"
+        ></confirm-dialog>
+
         <adminlte-vue-box color="success" :collapsed="isCollapsed" id="user-invitations-list-box" :loading="loading">
             <span slot="title">Invitations Lists</span>
 
+            <user-invitations-list-global-actions :selected="selectedItems()"></user-invitations-list-global-actions>
+
             <user-invitations-list-filter-bar></user-invitations-list-filter-bar>
-            <!--TODO-->
-            TODO: Global action here: delete, resend invitation
-            <div class="table-responsive">
+
+            <adminlte-vue-alert color="success" title="Done!" v-if="showResult" id="user-invitations-list-result"
+                                style="clear: both;">
+                {{ result }}
+            </adminlte-vue-alert>
+
+            <div class="table-responsive" style="clear: left;">
                 <vuetable ref="vuetable"
                           :api-url="apiUrl"
                           :fields="columns"
@@ -55,18 +62,22 @@
 <script>
 
   import UserInvitationsListFilterBar from './UserInvitationsListFilterBar'
+  import UserInvitationsListGlobalActions from './UserInvitationsListGlobalActions'
   import UserInvitationDetailRow from './UserInvitationDetailRow'
   import UserInvitationsListCustomActions from './UserInvitationsListCustomActions'
 
   Vue.component('user-invitations-list-filter-bar', UserInvitationsListFilterBar)
+  Vue.component('user-invitations-list-global-actions', UserInvitationsListGlobalActions)
   Vue.component('user-invitations-detail-row', UserInvitationDetailRow)
   Vue.component('user-invitations-list-custom-actions', UserInvitationsListCustomActions)
 
   import List from '../mixins/List.js'
+  import PerformAction from '../mixins/PerformAction.js'
+  import HideDialog from '../mixins/HideDialog.js'
 
   export default {
     mixins: [
-      List
+      List,PerformAction, HideDialog
     ],
     components: {
       UserInvitationsListFilterBar
@@ -113,6 +124,45 @@
         ]
       }
     },
+    methods: {
+      selectedItems () {
+        if (this.$refs.vuetable) return this.$refs.vuetable.selectedTo
+        return []
+      },
+      checkDialogType (type) {
+        return this.validDialogs().includes(type)
+      },
+      validDialogs() {
+        //TODO
+        return ['delete-user-invitation','']
+      },
+      executePostConfirmAction () {
+        switch(this.confirmDialogType) {
+          case 'delete-user-invitation':
+            this.deleteUserInvitation(this.currentData)
+            break;
+          //TODO
+          case 'reset-user-password':
+            this.resetPassword(this.currentData)
+            break;s
+        }
+      },
+      deleteUserInvitation (data) {
+        this.performAction(
+          data,
+          '/' + data.id,
+          [],
+          'User invitation for ' + data.email + ' has been deleted!',
+          'delete',
+          'show-result-user-invitations-list'
+        )
+        this.reload()
+      },
+      hideDialog() {
+        this.performingAction = false
+        this.dialogHasToBeShown = false
+      }
+    },
     events: {
       'filter-set-user-invitations-list' (filterText) {
         this.moreParams = {
@@ -144,6 +194,16 @@
       },
       'expand-user-invitations-list' () {
         this.isCollapsed = false
+      },
+      'show-confirm-dialog' (type, dialog, data) {
+        this.showDialog(type, dialog, data)
+      },
+      'show-result-user-invitations-list' (result) {
+        this.showResult = true
+        this.result = result
+      },
+      'hideDialog' () {
+        this.onHide()
       }
     }
   }

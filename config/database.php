@@ -45,6 +45,27 @@ return [
             'prefix' => '',
         ],
 
+        'migration_ro' => [
+            'driver' => 'mysql',
+            'read' => [
+                'host' => env('TUNNELER_LOCAL_ADDRESS', '127.0.0.1'),
+            ],
+            'write' => [
+                'host' => '9.9.9.9',
+            ],
+            'port' => env('TUNNELER_LOCAL_PORT', '3306'),
+            'database' => env('MIGRATION_RO_DB_DATABASE', 'ebre_escool'),
+            'username' => env('MIGRATION_RO_DB_USERNAME', 'sergi'),
+            'password' => env('MIGRATION_RO_DB_PASSWORD', ''),
+            'unix_socket' => env('MIGRATION_RO_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
+
         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),

@@ -22,7 +22,7 @@
       <i class="glyphicon glyphicon-pencil"></i>
     </button>
     <button class="btn btn-sm btn-danger" :id="'delete-user-invitation-' + rowData.id" title="Delete"
-            @click="deleteResource('user-invitations',rowData)"
+            @click="confirmDialog('delete-user-invitation',rowData)"
             :disabled="!laravel.user.can['delete-user-invitations']">
       <i class="glyphicon glyphicon-trash"></i>
     </button>
@@ -38,7 +38,23 @@
   export default {
     mixins: [
       CustomActions
-    ]
+    ],
+    methods: {
+      getDialogByType(type) {
+        switch(type) {
+          case 'delete-user-invitation':
+            return this.getDialogForDeleteUserInvitation()
+//          case n:
+//            return getDialogForDeleleteUserInvitation()
+        }
+      },
+      getDialogForDeleteUserInvitation() {
+        return {
+          title: 'Confirm user invitation deletion',
+          body: 'Are you sure you want to delete user invitation?'
+        }
+      }
+    }
   }
 </script>
 

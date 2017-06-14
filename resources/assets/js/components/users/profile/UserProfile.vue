@@ -354,12 +354,9 @@
       fetchUser () {
         let profileUrl = this.apiUrl
         if (this.id) profileUrl = profileUrl + '/' + this.id
-        console.log('URL API: ' + profileUrl)
         axios.get(profileUrl)
           .then(response => {
-            console.log(response.data.name)
             this.user = response.data
-            console.log(response)
           })
           .catch(error => {
             console.log(error)

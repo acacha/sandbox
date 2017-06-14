@@ -1,27 +1,29 @@
 <template>
     <div id="user-list">
 
-        <adminlte-vue-modal id="confirm-user-deletion-modal" color="danger">
-            <h4 slot="title">Confirm User deletion</h4>
-            <p>Are you sure you want to delete user?</p>
-            <div class="modal-footer" slot="footer">
-                <input type="hidden" id="user_id" value=""/>
-                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline" id="confirm-user-deletion-button" @click="deleteResource()"><i v-if="this.deleting" id="deleting-user-spinner" class="fa fa-refresh fa-spin"></i>  Delete</button>
-            </div>
-        </adminlte-vue-modal>
+        <confirm-dialog
+                id="users-list-confirm-modal"
+                :show="dialogHasToBeShown"
+                :acting="performingAction"
+                :title="confirmDialogTitle"
+                :body="confirmDialogBody"
+                @hide="onHide"
+                @confirm="onConfirm"
+                :confirm-text="confirmDialogText"
+        ></confirm-dialog>
 
         <adminlte-vue-box color="success" :collapsed="isCollapsed" id="users-list-box" :loading="loading">
             <span slot="title">Users Lists</span>
-            <users-list-filter-bar></users-list-filter-bar>
-            <!--TODO-->
-            TODO: Global action here: delete, reset password invitation
 
-            <adminlte-vue-alert color="success" title="Done!" v-if="showResult" id="users-list-result">
+            <users-list-filter-bar></users-list-filter-bar>
+            <users-list-global-actions :selected="selectedItems()"></users-list-global-actions>
+
+            <adminlte-vue-alert color="success" title="Done!" v-if="showResult" id="users-list-result"
+                                style="clear: left;">
                 {{ result }}
             </adminlte-vue-alert>
 
-            <div class="table-responsive">
+            <div class="table-responsive" style="clear: left;">
                 <vuetable ref="vuetable"
                           :api-url="apiUrl"
                           :fields="columns"
@@ -38,6 +40,7 @@
                           @vuetable:loaded="hideLoader"
                 ></vuetable>
             </div>
+
             <div class="vuetable-pagination" id="users-list-vuetable-pagination">
                 <vuetable-pagination-info ref="paginationInfo"
                                           info-class="pagination-info"
@@ -58,26 +61,28 @@
 <script>
 
   import UsersListFilterBar from './UsersListFilterBar'
+  import UsersListGlobalActions from './UsersListGlobalActions'
   import UserDetailRow from './UserDetailRow'
   import UserListCustomActions from './UsersListCustomActions'
 
   Vue.component('users-list-filter-bar', UsersListFilterBar)
+  Vue.component('users-list-global-actions', UsersListGlobalActions)
   Vue.component('user-detail-row', UserDetailRow)
   Vue.component('users-list-custom-actions', UserListCustomActions)
 
   import List from './mixins/List.js'
+  import HideDialog from './mixins/HideDialog.js'
+  import PerformAction from './mixins/PerformAction.js'
 
   export default {
     mixins: [
-      List
+      List, PerformAction, HideDialog
     ],
     components: {
       UsersListFilterBar
     },
     data() {
       return {
-        showResult: false,
-        result: '',
         columns: [
           {
             name: '__sequence',
@@ -120,6 +125,81 @@
         ],
       }
     },
+    methods: {
+      selectedItems () {
+        if (this.$refs.vuetable) return this.$refs.vuetable.selectedTo
+        return []
+      },
+      checkDialogType (type){
+        return this.validDialogs().includes(type)
+      },
+      validDialogs() {
+        return ['delete-user','reset-user-password','delete-users','reset-users-passwords']
+      },
+      executePostConfirmAction () {
+        switch(this.confirmDialogType) {
+          case 'delete-user':
+            this.deleteUser(this.currentData)
+            break;
+          case 'reset-user-password':
+            this.resetPassword(this.currentData)
+            break;
+          case 'delete-users':
+            this.deleteUsers(this.currentData)
+            break;
+          case 'reset-users-passwords':
+            this.resetPasswords(this.currentData)
+            break;
+        }
+      },
+      deleteUser (data) {
+        this.performAction(
+          data,
+          '/' + data.id,
+          [],
+          'User ' + data.name + ' has been deleted!',
+          'delete',
+          'show-result-users-list'
+        )
+        this.reload()
+      },
+      resetPassword(data) {
+        this.performAction(
+          data,
+          '/send/reset-password-email',
+          {
+            email: data.email
+          },
+          'Password reset email sent to user ' + data.name + '.',
+          'post',
+          'show-result-users-list'
+        )
+      },
+      deleteUsers(data) {
+        this.performAction(
+          data,
+          '-massive',
+          {
+            ids: data
+          },
+          'Selected users removed.',
+          'post',
+          'show-result-users-list'
+        )
+        this.reload()
+      },
+      resetPasswords(data) {
+        this.performAction(
+          data,
+          '/send/reset-password-email/massive',
+          {
+            ids: data
+          },
+          'Password reset email sent to user all the selected users.',
+          'post',
+          'show-result-users-list')
+      }
+    },
     events: {
       'filter-set-users-list' (filterText) {
         this.moreParams = {
@@ -134,9 +214,6 @@
       'reload-users-list' () {
         Vue.nextTick(() => this.reload())
       },
-      'show-delete-user-dialog' (id) {
-        this.showDeleteDialog(id)
-      },
       'toogle-show-user' (id) {
         this.detailRowEditing(id,false)
       },
@@ -146,9 +223,15 @@
       'reload-user-list' () {
         Vue.nextTick(() => this.refresh())
       },
-      'show-result' (result) {
+      'show-result-users-list' (result) {
         this.showResult = true
         this.result = result
+      },
+      'hideDialog' () {
+        this.onHide()
+      },
+      'show-confirm-dialog' (type, dialog, data) {
+        this.showDialog(type, dialog, data)
       }
     }
   }

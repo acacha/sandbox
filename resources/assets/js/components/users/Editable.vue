@@ -97,7 +97,6 @@
         var component = this
         this.form.put(this.apiUrl + '/' + this.id)
           .then(response => {
-            console.log('Firing event: ' + this.afterSaveEventName)
             component.$events.fire(this.afterSaveEventName)
             component.toogleEditing();
           })
