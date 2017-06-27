@@ -15,10 +15,10 @@ trait ChecksAuthorizations
      * @param $uri
      * @param string $httpMethod
      */
-    protected function checkAuthorization($uri, $signInCallback, $httpMethod = 'GET') {
+    protected function checkAuthorization($uri, $signInCallback, $httpMethod = 'GET', $input = []) {
         $this->checkGuests($uri, $httpMethod);
-        $this->checkUsersWithoutAuthorization($uri, $httpMethod);
-        $this->checkAuthorizedUsers($uri, $signInCallback, $httpMethod);
+        $this->checkUsersWithoutAuthorization($uri, $httpMethod, $input);
+        $this->checkAuthorizedUsers($uri, $signInCallback, $httpMethod, $input);
     }
 
     /**
@@ -39,10 +39,10 @@ trait ChecksAuthorizations
      * @param $uri
      * @param string $httpMethod
      */
-    protected function checkUsersWithoutAuthorization($uri, $httpMethod = 'GET')
+    protected function checkUsersWithoutAuthorization($uri, $httpMethod = 'GET', $input = [])
     {
         $this->signIn(null,'api');
-        $response = $this->json($httpMethod, $uri);
+        $response = $this->json($httpMethod, $uri, $input);
         $response->assertStatus(403);
     }
 
@@ -53,10 +53,10 @@ trait ChecksAuthorizations
      * @param $signInCallback
      * @param string $httpMethod
      */
-    protected function checkAuthorizedUsers($uri, $signInCallback,  $httpMethod = 'GET')
+    protected function checkAuthorizedUsers($uri, $signInCallback,  $httpMethod = 'GET', $input = [])
     {
         $signInCallback('api');
-        $response = $this->json($httpMethod,$uri);
+        $response = $this->json($httpMethod,$uri, $input);
         $response->assertStatus(200);
     }
 }

@@ -19,6 +19,7 @@ use Notification;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
+use Tests\Traits\AssertResponseValidations;
 
 /**
  * Class UsersManagementTest.
@@ -28,7 +29,13 @@ use Tests\TestCase;
 class UsersManagementTest extends TestCase
 {
 
-    use DatabaseMigrations;
+    use DatabaseMigrations, AssertResponseValidations;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        initialize_users_management_permissions();
+    }
 
     /**
      * Unauthorized user cannot browse users management.
@@ -260,16 +267,6 @@ class UsersManagementTest extends TestCase
         $this->assertResponseValidation($response,422,'email','The email has already been taken.');
 
 
-    }
-    /**
-     * Assert Response validation.
-     */
-    private function assertResponseValidation($response, $statusCode, $field, $email){
-        $response->assertStatus($statusCode)->assertExactJson([
-            $field => [
-                0 => $email
-            ]
-        ]);
     }
 
     /**
@@ -1308,8 +1305,8 @@ class UsersManagementTest extends TestCase
     /**
      * Test user tracking api.
      *
-     * @group caca10
-     * @test
+     * @group todo
+     * TODO @ test
      */
     public function user_tracking()
     {
@@ -1319,7 +1316,7 @@ class UsersManagementTest extends TestCase
         $response->assertJson([]);
 
         //TODO
-        $response->dump();
+//        $response->dump();
 //        $response->assertJson([]);
 //        $response->assertJsonStructure([ 'type',
 //          [ type: 'time-label', time: '11 Feb. 2014'],

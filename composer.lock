@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e6a4da7de674339e6f26f8906dbc7c91",
+    "content-hash": "51fe8aa9244adc051b7ab5fe6a891484",
     "packages": [
         {
             "name": "acacha/admin-lte-template-laravel",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/acacha/adminlte-laravel.git",
-                "reference": "2367eeea929a453bd1077abd927681b77fb7246c"
+                "reference": "f3a63792e24e8b09f563d584f65a5d1d87cdfd23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/acacha/adminlte-laravel/zipball/2367eeea929a453bd1077abd927681b77fb7246c",
-                "reference": "2367eeea929a453bd1077abd927681b77fb7246c",
+                "url": "https://api.github.com/repos/acacha/adminlte-laravel/zipball/f3a63792e24e8b09f563d584f65a5d1d87cdfd23",
+                "reference": "f3a63792e24e8b09f563d584f65a5d1d87cdfd23",
                 "shasum": ""
             },
             "require": {
@@ -70,7 +70,7 @@
                 "template",
                 "theme"
             ],
-            "time": "2017-06-07T13:53:52+00:00"
+            "time": "2017-06-21T15:25:35+00:00"
         },
         {
             "name": "acacha/filesystem",
@@ -126,16 +126,16 @@
         },
         {
             "name": "acacha/helpers",
-            "version": "0.1.3",
+            "version": "0.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/acacha/helpers.git",
-                "reference": "02a461ffbcd7991c7758d78d0764fd3f9bb4582f"
+                "reference": "d211d8de2534b3227be2f52c35c1b1664e938598"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/acacha/helpers/zipball/02a461ffbcd7991c7758d78d0764fd3f9bb4582f",
-                "reference": "02a461ffbcd7991c7758d78d0764fd3f9bb4582f",
+                "url": "https://api.github.com/repos/acacha/helpers/zipball/d211d8de2534b3227be2f52c35c1b1664e938598",
+                "reference": "d211d8de2534b3227be2f52c35c1b1664e938598",
                 "shasum": ""
             },
             "require": {
@@ -178,7 +178,7 @@
                 "helpers",
                 "laravel"
             ],
-            "time": "2016-12-24T09:40:05+00:00"
+            "time": "2017-06-20T13:28:48+00:00"
         },
         {
             "name": "acacha/stateful-eloquent",
@@ -288,15 +288,17 @@
             "name": "acacha/users",
             "version": "dev-master",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/acacha/users/zipball/2ff1970ae4568e9c10ead90b553d48f55fc92f84",
-                "reference": "2ff1970ae4568e9c10ead90b553d48f55fc92f84",
-                "shasum": ""
+                "type": "path",
+                "url": "../package",
+                "reference": "58043bf8ab836d40cccd90f805679d3395988841",
+                "shasum": null
             },
             "require": {
                 "acacha/stateful-eloquent": "^0.1.3",
                 "laravel/passport": "^2.0",
                 "php": "~5.6|~7.0",
+                "predis/predis": "^1.1",
+                "scool/ebre_escool_model": "dev-master",
                 "spatie/laravel-permission": "^2.1",
                 "venturecraft/revisionable": "^1.28"
             },
@@ -319,7 +321,22 @@
                     "Acacha\\Users\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Acacha\\Users\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ],
+                "check-style": [
+                    "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"
+                ],
+                "fix-style": [
+                    "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -334,12 +351,11 @@
             "description": "User managment with Laravel and adminlte-laravel",
             "homepage": "https://github.com/acacha/users",
             "keywords": [
-                "AdminLTE",
-                "Users",
                 "acacha",
-                "laravel"
-            ],
-            "time": "2017-06-07T13:47:30+00:00"
+                "adminlte",
+                "laravel",
+                "users"
+            ]
         },
         {
             "name": "barryvdh/laravel-debugbar",
@@ -405,28 +421,30 @@
         },
         {
             "name": "barryvdh/laravel-ide-helper",
-            "version": "v2.3.2",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-ide-helper.git",
-                "reference": "e82de98cef0d6597b1b686be0b5813a3a4bb53c5"
+                "reference": "87a02ff574f722c685e011f76692ab869ab64f6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-ide-helper/zipball/e82de98cef0d6597b1b686be0b5813a3a4bb53c5",
-                "reference": "e82de98cef0d6597b1b686be0b5813a3a4bb53c5",
+                "url": "https://api.github.com/repos/barryvdh/laravel-ide-helper/zipball/87a02ff574f722c685e011f76692ab869ab64f6c",
+                "reference": "87a02ff574f722c685e011f76692ab869ab64f6c",
                 "shasum": ""
             },
             "require": {
                 "barryvdh/reflection-docblock": "^2.0.4",
-                "illuminate/console": "^5.0,<5.5",
-                "illuminate/filesystem": "^5.0,<5.5",
-                "illuminate/support": "^5.0,<5.5",
+                "illuminate/console": "^5.0,<5.6",
+                "illuminate/filesystem": "^5.0,<5.6",
+                "illuminate/support": "^5.0,<5.6",
                 "php": ">=5.4.0",
                 "symfony/class-loader": "^2.3|^3.0"
             },
             "require-dev": {
                 "doctrine/dbal": "~2.3",
+                "illuminate/config": "^5.0,<5.6",
+                "illuminate/view": "^5.0,<5.6",
                 "phpunit/phpunit": "4.*",
                 "scrutinizer/ocular": "~1.1",
                 "squizlabs/php_codesniffer": "~2.3"
@@ -438,6 +456,11 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.3-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider"
+                    ]
                 }
             },
             "autoload": {
@@ -467,7 +490,7 @@
                 "phpstorm",
                 "sublime"
             ],
-            "time": "2017-02-22T12:27:33+00:00"
+            "time": "2017-06-16T14:08:59+00:00"
         },
         {
             "name": "barryvdh/laravel-snappy",
@@ -853,16 +876,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.2.3",
+            "version": "6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "8d6c6cc55186db87b7dc5009827429ba4e9dc006"
+                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/8d6c6cc55186db87b7dc5009827429ba4e9dc006",
-                "reference": "8d6c6cc55186db87b7dc5009827429ba4e9dc006",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f4db5a78a5ea468d4831de7f0bf9d9415e348699",
+                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699",
                 "shasum": ""
             },
             "require": {
@@ -872,8 +895,11 @@
             },
             "require-dev": {
                 "ext-curl": "*",
-                "phpunit/phpunit": "^4.0",
+                "phpunit/phpunit": "^4.0 || ^5.0",
                 "psr/log": "^1.0"
+            },
+            "suggest": {
+                "psr/log": "Required for using the Log middleware"
             },
             "type": "library",
             "extra": {
@@ -911,7 +937,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2017-02-28T22:50:30+00:00"
+            "time": "2017-06-22T18:50:49+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -1198,20 +1224,20 @@
         },
         {
             "name": "knplabs/knp-snappy",
-            "version": "0.4.3",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/snappy.git",
-                "reference": "44f7a9b37d5686fd7db4c1e9569a802a5d16923f"
+                "reference": "370da31fa92a8e583e34558c589e630647617a38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/snappy/zipball/44f7a9b37d5686fd7db4c1e9569a802a5d16923f",
-                "reference": "44f7a9b37d5686fd7db4c1e9569a802a5d16923f",
+                "url": "https://api.github.com/repos/KnpLabs/snappy/zipball/370da31fa92a8e583e34558c589e630647617a38",
+                "reference": "370da31fa92a8e583e34558c589e630647617a38",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3",
+                "php": ">=5.6",
                 "symfony/process": "~2.3|~3.0"
             },
             "require-dev": {
@@ -1231,8 +1257,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Knp\\Snappy": "src/"
+                "psr-4": {
+                    "Knp\\Snappy\\": "src/Knp/Snappy"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1259,7 +1285,7 @@
                 "thumbnail",
                 "wkhtmltopdf"
             ],
-            "time": "2015-11-17T13:16:27+00:00"
+            "time": "2017-06-16T07:50:40+00:00"
         },
         {
             "name": "laravel/browser-kit-testing",
@@ -1366,16 +1392,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.4.26",
+            "version": "v5.4.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "a7ebbfab64111e24f8e584db64e2be9279ded357"
+                "reference": "66f5e1b37cbd66e730ea18850ded6dc0ad570404"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/a7ebbfab64111e24f8e584db64e2be9279ded357",
-                "reference": "a7ebbfab64111e24f8e584db64e2be9279ded357",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/66f5e1b37cbd66e730ea18850ded6dc0ad570404",
+                "reference": "66f5e1b37cbd66e730ea18850ded6dc0ad570404",
                 "shasum": ""
             },
             "require": {
@@ -1491,20 +1517,20 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-06-13T18:58:49+00:00"
+            "time": "2017-06-15T19:08:25+00:00"
         },
         {
             "name": "laravel/passport",
-            "version": "v2.0.10",
+            "version": "v2.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/passport.git",
-                "reference": "cd908e73505f7d3aad101d3177280db952ffc190"
+                "reference": "1e6f56ccf42255e8479d0dcd695619dab6613313"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/passport/zipball/cd908e73505f7d3aad101d3177280db952ffc190",
-                "reference": "cd908e73505f7d3aad101d3177280db952ffc190",
+                "url": "https://api.github.com/repos/laravel/passport/zipball/1e6f56ccf42255e8479d0dcd695619dab6613313",
+                "reference": "1e6f56ccf42255e8479d0dcd695619dab6613313",
                 "shasum": ""
             },
             "require": {
@@ -1532,6 +1558,11 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "3.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Passport\\PassportServiceProvider"
+                    ]
                 }
             },
             "autoload": {
@@ -1555,7 +1586,7 @@
                 "oauth",
                 "passport"
             ],
-            "time": "2017-06-02T21:51:18+00:00"
+            "time": "2017-06-14T21:58:27+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -1950,16 +1981,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.22.1",
+            "version": "1.23.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "1e044bc4b34e91743943479f1be7a1d5eb93add0"
+                "reference": "fd8c787753b3a2ad11bc60c063cff1358a32a3b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/1e044bc4b34e91743943479f1be7a1d5eb93add0",
-                "reference": "1e044bc4b34e91743943479f1be7a1d5eb93add0",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/fd8c787753b3a2ad11bc60c063cff1358a32a3b4",
+                "reference": "fd8c787753b3a2ad11bc60c063cff1358a32a3b4",
                 "shasum": ""
             },
             "require": {
@@ -1980,7 +2011,7 @@
                 "phpunit/phpunit-mock-objects": "2.3.0",
                 "ruflin/elastica": ">=0.90 <3.0",
                 "sentry/sentry": "^0.13",
-                "swiftmailer/swiftmailer": "~5.3"
+                "swiftmailer/swiftmailer": "^5.3|^6.0"
             },
             "suggest": {
                 "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
@@ -2024,7 +2055,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2017-03-13T07:08:03+00:00"
+            "time": "2017-06-19T01:22:40+00:00"
         },
         {
             "name": "mtdowling/cron-expression",
@@ -2315,6 +2346,56 @@
             "time": "2017-06-05T06:31:10+00:00"
         },
         {
+            "name": "predis/predis",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nrk/predis.git",
+                "reference": "f0210e38881631afeafb56ab43405a92cafd9fd1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nrk/predis/zipball/f0210e38881631afeafb56ab43405a92cafd9fd1",
+                "reference": "f0210e38881631afeafb56ab43405a92cafd9fd1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "suggest": {
+                "ext-curl": "Allows access to Webdis when paired with phpiredis",
+                "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniele Alessandri",
+                    "email": "suppakilla@gmail.com",
+                    "homepage": "http://clorophilla.net"
+                }
+            ],
+            "description": "Flexible and feature-complete Redis client for PHP and HHVM",
+            "homepage": "http://github.com/nrk/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "time": "2016-06-16T16:22:20+00:00"
+        },
+        {
             "name": "psr/http-message",
             "version": "1.0.1",
             "source": {
@@ -2413,16 +2494,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.8.6",
+            "version": "v0.8.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "7028d6d525fb183d50b249b7c07598e3d386b27d"
+                "reference": "fe65c30cbc55c71e61ba3a38b5a581149be31b8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/7028d6d525fb183d50b249b7c07598e3d386b27d",
-                "reference": "7028d6d525fb183d50b249b7c07598e3d386b27d",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/fe65c30cbc55c71e61ba3a38b5a581149be31b8e",
+                "reference": "fe65c30cbc55c71e61ba3a38b5a581149be31b8e",
                 "shasum": ""
             },
             "require": {
@@ -2482,7 +2563,7 @@
                 "interactive",
                 "shell"
             ],
-            "time": "2017-06-04T10:34:20+00:00"
+            "time": "2017-06-24T06:16:19+00:00"
         },
         {
             "name": "pusher/pusher-php-server",
@@ -2609,6 +2690,58 @@
                 "uuid"
             ],
             "time": "2017-03-26T20:37:53+00:00"
+        },
+        {
+            "name": "scool/ebre_escool_model",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/acacha/ebre_escool_model.git",
+                "reference": "a6c590f0c7894ace87965d625d31ed64845b1544"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/acacha/ebre_escool_model/zipball/a6c590f0c7894ace87965d625d31ed64845b1544",
+                "reference": "a6c590f0c7894ace87965d625d31ed64845b1544",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~5.6|~7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0||~5.0",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Scool\\EbreEscoolModel\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sergi Tur Badenas",
+                    "email": "sergiturbadenas@gmail.com",
+                    "homepage": "https://github.com/acacha",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel model for old ebre_escool database",
+            "homepage": "https://github.com/acacha/ebre_escool_mdel",
+            "keywords": [
+                "Scool",
+                "ebre_escool_model"
+            ],
+            "time": "2017-06-26T15:14:32+00:00"
         },
         {
             "name": "spatie/html-element",
@@ -4794,16 +4927,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.7.20",
+            "version": "5.7.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3cb94a5f8c07a03c8b7527ed7468a2926203f58b"
+                "reference": "3b91adfb64264ddec5a2dee9851f354aa66327db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3cb94a5f8c07a03c8b7527ed7468a2926203f58b",
-                "reference": "3cb94a5f8c07a03c8b7527ed7468a2926203f58b",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3b91adfb64264ddec5a2dee9851f354aa66327db",
+                "reference": "3b91adfb64264ddec5a2dee9851f354aa66327db",
                 "shasum": ""
             },
             "require": {
@@ -4872,7 +5005,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-05-22T07:42:55+00:00"
+            "time": "2017-06-21T08:11:54+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -5556,7 +5689,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "acacha/admin-lte-template-laravel": 20,
-        "acacha/users": 20
+        "acacha/users": 20,
+        "scool/ebre_escool_model": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -63,12 +63,40 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 371);
+/******/ 	return __webpack_require__(__webpack_require__.s = 395);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 115:
+/***/ 10:
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+
+/***/ 122:
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -77,13 +105,13 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-window.$ = window.jQuery = __webpack_require__(37);
+window.$ = window.jQuery = __webpack_require__(39);
 
-__webpack_require__(172);
+__webpack_require__(196);
 
-__webpack_require__(60);
+__webpack_require__(62);
 
-window.Vue = __webpack_require__(31);
+window.Vue = __webpack_require__(33);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -98,7 +126,7 @@ var app = new Vue({
 
 /***/ }),
 
-/***/ 172:
+/***/ 196:
 /***/ (function(module, exports) {
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -221,7 +249,7 @@ jQuery(function ($) {
 
 /***/ }),
 
-/***/ 31:
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9856,11 +9884,11 @@ Vue$3.compile = compileToFunctions;
 
 module.exports = Vue$3;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
 
-/***/ 37:
+/***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -20121,15 +20149,15 @@ return jQuery;
 
 /***/ }),
 
-/***/ 371:
+/***/ 395:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(115);
+module.exports = __webpack_require__(122);
 
 
 /***/ }),
 
-/***/ 60:
+/***/ 62:
 /***/ (function(module, exports) {
 
 /* */ 
@@ -22453,34 +22481,6 @@ if (typeof jQuery === 'undefined') {
   })
 
 }(jQuery);
-
-
-/***/ }),
-
-/***/ 8:
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
 
 
 /***/ })

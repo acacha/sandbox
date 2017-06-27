@@ -3,6 +3,7 @@
 namespace App;
 
 use Acacha\Users\Traits\ExposePermissions;
+use Acacha\Users\Traits\HasUserMigrations;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
@@ -16,7 +17,7 @@ use Venturecraft\Revisionable\RevisionableTrait;
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, HasApiTokens, ExposePermissions, RevisionableTrait;
+    use Notifiable, HasRoles, HasApiTokens, ExposePermissions, RevisionableTrait, HasUserMigrations;
 
     /**
      * Boot method.

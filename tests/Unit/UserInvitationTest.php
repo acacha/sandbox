@@ -43,6 +43,7 @@ class UserInvitationTest extends TestCase
     {
         $faker = Factory::create();
         $invitation = UserInvitation::create(['email' => $faker->email ]);
+        $invitation->user_id = factory(\App\User::class)->create()->id;
         $invitation->accept();
         $this->assertFalse($invitation->pending());
         $this->assertTrue($invitation->accepted());

@@ -21,4 +21,15 @@ trait CreatesModels
     {
         return factory($class, $times)->create($attributes);
     }
+
+    /**
+     * Create models.
+     *
+     * @param $model
+     * @param null $number
+     * @return mixed
+     */
+    private function createModels($model, $number = null) {
+        return factory($model , $number)->create();
+    }
 }

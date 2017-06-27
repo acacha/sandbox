@@ -11,6 +11,8 @@ use App\User;
  */
 trait InteractsWithUsers
 {
+    use CreatesModels;
+
     /**
      * Create a user with manage users permission.
      *
@@ -33,17 +35,5 @@ trait InteractsWithUsers
     private function createUsers($number = null)
     {
         return $this->createModels(User::class,$number);
-    }
-
-    /**
-     * Create models.
-     *
-     * @param $model
-     * @param null $number
-     * @return mixed
-     */
-    private function createModels($model, $number = null) {
-        $model = factory($model , $number)->create();
-        return $model;
     }
 }
