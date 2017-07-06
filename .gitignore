@@ -11,3 +11,4 @@ npm-debug.log
 .env
 .env.backup
 .env.testing
+.google_auth.json
