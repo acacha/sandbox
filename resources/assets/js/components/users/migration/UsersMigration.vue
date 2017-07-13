@@ -6,47 +6,26 @@
                 <span slot="title">Migration options</span>
                 <!-- Minimal style -->
 
-                <!-- radio -->
-                <div class="form-group">
-                    <label>
-                        <div class="iradio_minimal-red checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="radio" name="r2" class="minimal-red" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                    </label>
-                    <label>
-                        <div class="iradio_minimal-red" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="radio" name="r2" class="minimal-red" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                    </label>
-                    <label>
-                        <div class="iradio_minimal-red disabled" aria-checked="false" aria-disabled="true" style="position: relative;"><input type="radio" name="r2" class="minimal-red" disabled="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                        Two options: only no existing users in destination or all
-                    </label>
-                </div>
-
+                <p>By default only pending users to migrate are executed!</p>
 
                 <!-- radio -->
                 <div class="form-group">
-                    <label>
-                        <div class="iradio_minimal-red checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="radio" name="r2" class="minimal-red" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                    </label>
-                    <label>
-                        <div class="iradio_minimal-red" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="radio" name="r2" class="minimal-red" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                    </label>
-                    <label>
-                        <div class="iradio_minimal-red disabled" aria-checked="false" aria-disabled="true" style="position: relative;"><input type="radio" name="r2" class="minimal-red" disabled="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                        HOW TO (TODO) propose only new users from last migration!!!!!!!!!!!
-                    </label>
+                    <div class="checkbox icheck">
+                        <label>
+                            <input style="display:none;" type="checkbox" name="remember"
+                                   ref="all" v-model="form.all"> All users
+                        </label>
+                    </div>
+                    <div class="checkbox icheck">
+                        <label>
+                            <input style="display:none;" type="checkbox" name="remember"
+                                   ref="overwrite" v-model="form.overwrite">
+                            Overwrite (be careful! current data on destination could be lost).
+                            User id on destination will be preserved!
+                        </label>
+                    </div>
                 </div>
-                <!-- radio -->
-                <div class="form-group">
-                    <label>
-                        <div class="iradio_flat-green checked" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="radio" name="r3" class="flat-red" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                    </label>
-                    <label>
-                        <div class="iradio_flat-green" aria-checked="false" aria-disabled="false" style="position: relative;"><input type="radio" name="r3" class="flat-red" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                    </label>
-                    <label>
-                        <div class="iradio_flat-green disabled" aria-checked="false" aria-disabled="true" style="position: relative;"><input type="radio" name="r3" class="flat-red" disabled="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background: rgb(255, 255, 255); border: 0px; opacity: 0;"></ins></div>
-                        Overwrite data of existing users in destination database (destination user id left untouched)
-                    </label>
-                </div>
+
             </adminlte-vue-box>
 
             <adminlte-vue-box color="primary" id="migrate-users-box" :collapsable="false" :removable="false">
@@ -88,6 +67,33 @@
                 </div>
             </div>
 
+            <!--TODO create adminlte-vue-box variant for chat boxes -->
+            <div class="box box-primary direct-chat direct-chat-primary" id="batch-users-migration-history">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Batch Migrations history</h3>
+
+                    <div class="box-tools pull-right">
+                        <span data-toggle="tooltip" title="3 New migrations" class="badge bg-light-blue">3</span>
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="direct-chat-messages">
+                        <div class="direct-chat-msg" v-for="batch in batches">
+                            <div class="direct-chat-info clearfix">
+                                <span class="direct-chat-name pull-left">Batch => State: {{ batch.state }} | Migrated: {{ batch.accomplished }} | Errors: {{ batch.incidences }} | Last update: {{ batch.updated_at }} </span>
+                                <span class="direct-chat-timestamp pull-right">{{ batch.created_at }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overlay" v-if="fetchingBatchMigrationHistory">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -99,13 +105,17 @@
 
   export default {
     data() {
+      let form = new Form({ all: '', overwrite: '' })
       return {
+        form: form,
         progress: 0,
         progressMessage: '',
         migrating: false,
         fetchingMigrationHistory: false,
+        fetchingBatchMigrationHistory: false,
         batchId: null,
-        migrations: []
+        migrations: [],
+        batches: []
       }
     },
     props: {
@@ -118,6 +128,8 @@
       migrate() {
         this.migrating = true
         this.progressMessage = 'Starting migration!'
+        this.progress= 0;
+        this.fetchingMigrationHistory = true
         let apiUrl = store.apiUrl + '-migration/migrate'
         var component = this
         axios.post(apiUrl)
@@ -153,9 +165,15 @@
             component.progress = payload.progress
             if (component.progress == 100) {
               component.migrating = false
-              component.fetchMigrationHistory()
+              component.fetchingMigrationHistory = false
+              this.fetchMigrationHistory()
+              component.fetchBatchesMigrationHistory()
             }
           }
+        });
+        this.$echo.channel('users-migration').listen('UserHasBeenMigrated', (payload) => {
+          console.log(payload)
+          this.$events.fire('update-user-migration-dashboard')
         });
       },
       subscribeToMigrationHistoryEvents() {
@@ -164,7 +182,7 @@
           if (!component.migrating) this.fetchMigrationHistory()
         })
       },
-      fetchMigrationHistory(){
+      fetchMigrationHistory() {
         this.fetchingMigrationHistory = true
         let component = this
         let migrationHistoryRequest = new Form( {}, true )
@@ -173,12 +191,68 @@
             component.migrations = response.data.data
             this.fetchingMigrationHistory = false
           })
+      },
+      fetchBatchesMigrationHistory() {
+        this.fetchingBatchMigrationHistory = true
+        let component = this
+        let migrationHistoryRequest = new Form( {}, true )
+        migrationHistoryRequest.get(store.apiUrl + '-migration/batch_history')
+          .then( response => {
+            component.batches = response.data
+            this.fetchingBatchMigrationHistory = false
+          })
+      },
+      initializeIcheck() {
+        let component = this
+        $(this.$refs.all).iCheck({
+          checkboxClass: 'icheckbox_square-blue',
+          radioClass: 'iradio_square-blue',
+          increaseArea: '20%'
+        }).on('ifChecked', function (event) {
+          console.log('ifChecked')
+          component.form.set('all', true)
+          component.form.errors.clear('all')
+        }).on('ifUnchecked', function (event) {
+          component.form.set('all', '')
+          console.log('ifUnchecked')
+        })
+        $(this.$refs.overwrite).iCheck({
+          checkboxClass: 'icheckbox_square-blue',
+          radioClass: 'iradio_square-blue',
+          increaseArea: '20%'
+        }).on('ifChecked', function (event) {
+          console.log('ifChecked')
+          component.form.set('overwrite', true)
+          component.form.errors.clear('overwrite')
+        }).on('ifUnchecked', function (event) {
+          component.form.set('overwrite', '')
+          console.log('ifUnchecked')
+        })
+
+      }
+    },
+    watch: {
+      'form.all': function (value) {
+        if (value) {
+          $(this.$refs.all).iCheck('check')
+        } else {
+          $(this.$refs.all).iCheck('uncheck')
+        }
+      },
+      'form.overwrite': function (value) {
+        if (value) {
+          $(this.$refs.overwrite).iCheck('check')
+        } else {
+          $(this.$refs.overwrite).iCheck('uncheck')
+        }
       }
     },
     mounted() {
       this.subscribeToProgressBarEvents()
       this.fetchMigrationHistory()
+      this.fetchBatchesMigrationHistory()
       this.subscribeToMigrationHistoryEvents()
+      this.initializeIcheck()
     }
   }
 </script>

@@ -134,7 +134,8 @@ class UsersMigrationTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($manager, $userMigrations) {
             $this->login($browser,$manager)
                 ->visit('/management/users-migration')
-                ->assertVisible('div#users-migration-history');
+                ->driver->executeScript('document.getElementById("batch-users-migration-history").scrollIntoView();');
+                $browser->assertVisible('div#users-migration-history');
 
                 foreach ($userMigrations as $userMigration) {
                   $browser->assertSeeIn('div#users-migration-history',
@@ -151,7 +152,7 @@ class UsersMigrationTest extends DuskTestCase
      * @test
      * @return void
      */
-    public function see_batchusers_migration_history()
+    public function see_batch_users_migration_history()
     {
         dump(__FUNCTION__ );
         $manager = $this->createUserManagerUser();
@@ -161,12 +162,13 @@ class UsersMigrationTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($manager, $batches) {
             $this->login($browser,$manager)
                 ->visit('/management/users-migration')
-                ->pause(1000000000)
-                ->assertVisible('div#batch-users-migration-history');
+                ->driver->executeScript('document.getElementById("batch-users-migration-history").scrollIntoView();');
+
+            $browser->assertVisible('div#batch-users-migration-history');
 
             foreach ($batches as $batch) {
-                $browser->assertSeeIn('div#users-migration-history',
-                    'User ' . $batch->user->name . '|' . $batch->user->email. ' ( '.$batch->user->id.' ) migrated from JSON');
+                $browser->assertSeeIn('div#batch-users-migration-history',
+                    'Batch => State: ' . $batch->state . ' | Migrated: ' . $batch->accomplished . ' | Errors: '. $batch->incidences . ' | Last update: ' . $batch->updated_at);
             }
 
         });

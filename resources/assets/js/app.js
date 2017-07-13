@@ -50,6 +50,10 @@ Vue.component('user-profile', require('./components/users/profile/UserProfile.vu
 Vue.component('users-migration-dashboard', require('./components/users/migration/UsersMigrationDashboard.vue'))
 Vue.component('users-migration', require('./components/users/migration/UsersMigration.vue'))
 
+// Google Apps vue components
+Vue.component('google-apps-dashboard', require('./components/users/google/GoogleAppsDashboard.vue'))
+Vue.component('google-apps-users-list', require('./components/users/google/GoogleAppsUsersList.vue'))
+
 Vue.component(
   'passport-clients',
   require('./components/passport/Clients.vue')

@@ -40,6 +40,7 @@ Menu::macro('sidebar', function () {
         ->addIfCan('see-manage-users-view',Link::toUrl('/management/users', '<i class="fa fa-user"></i><span>Users</span>'))
         ->addIfCan('see-users-dashboard',Link::toUrl('/management/users/dashboard', '<i class="fa fa-link"></i><span>Users dashboard</span>'))
         ->addIfCan('see-users-tracking',Link::toUrl('/management/users/tracking', '<i class="fa fa-link"></i><span>Users tracking</span>'))
+        ->addIfCan('see-google-apps-users',Link::toUrl('/management/users/google', '<i class="fa fa-link"></i><span>Google apps Users</span>'))
         ->add(Menu::adminlteSeparator('SECONDARY MENU'))
         ->add(Menu::new()->prepend('<a href="#"><i class="fa fa-share"></i><span>Multilevel</span> <i class="fa fa-angle-left pull-right"></i></a>')
             ->addParentClass('treeview')

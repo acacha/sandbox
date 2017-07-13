@@ -183,6 +183,11 @@
     mounted() {
       this.boostrapDashboard()
       this.subscribeToRealTimeEvents()
+    },
+    events: {
+      'update-user-migration-dashboard' () {
+        Vue.nextTick(() => this.boostrapDashboard())
+      }
     }
   }
 </script>
