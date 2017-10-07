@@ -166,20 +166,9 @@ class GoogleAppsUsersTest extends TestCase
 
         $this->signInAsUserManager('api')
             ->json('GET', '/api/v1/management/users-google/local-sync')
-//            ->dump()
-            ->assertStatus(200);
-//            ->assertJsonStructure([
-//                'current_page',
-//                'data' => [
-//                    '*' => ['primaryEmail']
-//                ],
-//                'from',
-//                'last_page',
-//                'next_page_url',
-//                'per_page',
-//                'prev_page_url',
-//                'to',
-//                'total'
-//            ]);
+            ->assertStatus(200)
+            ->assertJson([
+                'completed' => 'true'
+            ]);
     }
 }
