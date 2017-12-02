@@ -6,8 +6,8 @@ window.Vue = require('vue')
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('register-user-by-email', require('./components/users/RegisterUserByEmail.vue'))
-Vue.component('invite-user-fullscreen', require('./components/users/invitations/InviteUserFullScreen.vue'))
+//Acacha Users management components
+require('users-bootstrap');
 
 /* eslint-disable no-undef, no-unused-vars */
 const app = new Vue({

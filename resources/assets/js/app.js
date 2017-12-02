@@ -39,19 +39,11 @@ Vue.component('login-form', require('./components/auth/LoginForm.vue'))
 Vue.component('email-reset-password-form', require('./components/auth/EmailResetPasswordForm.vue'))
 Vue.component('reset-password-form', require('./components/auth/ResetPasswordForm.vue'))
 
-Vue.component('users-management', require('./components/users/UsersManagement.vue'))
-Vue.component('users-invitations', require('./components/users/invitations/UserInvitations.vue'))
-Vue.component('create-user', require('./components/users/CreateUser.vue'))
-Vue.component('create-user-via-invitation', require('./components/users/CreateUserViaInvitation.vue'))
-Vue.component('users-dashboard', require('./components/users/dashboard/UsersDashboard.vue'))
-Vue.component('model-tracking', require('./components/tracking/ModelTracking.vue'))
-Vue.component('user-profile', require('./components/users/profile/UserProfile.vue'))
+//Acacha Users management components
+require('users-bootstrap');
 
+//Acacha users ebre-escool migration
 require('ebre-escool-users-migration-bootstrap');
-
-// Google Apps vue components
-Vue.component('google-apps-dashboard', require('./components/users/google/GoogleAppsDashboard.vue'))
-Vue.component('google-apps-users-list', require('./components/users/google/GoogleAppsUsersList.vue'))
 
 Vue.component(
   'passport-clients',
@@ -73,8 +65,6 @@ Vue.component(
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
-Vue.component('example', require('./components/Example.vue'));
 
 const app = new Vue({
     el: '#app'
