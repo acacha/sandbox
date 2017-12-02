@@ -33,5 +33,3 @@ Route::get('user/pdf/{id}', 'PdfController@user');
 Route::get('users/pdf', 'PdfController@users');
 
 Route::get('users/pdf/view', 'PdfController@users_view');
-
-Route::resource('Prova','Prova');
