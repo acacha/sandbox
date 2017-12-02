@@ -1,6 +1,6 @@
 <template>
     <single-step-form :apiUrl="apiUrl" @onSubmit="onSubmit">
-        <template scope="props">
+        <template slot-scope="props">
             <ol class="questions">
                 <li class="current">
                     <span><label for="email">Email to send invitation?</label></span>

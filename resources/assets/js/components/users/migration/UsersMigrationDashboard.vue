@@ -2,7 +2,7 @@
     <div id="migration_dashboard">
         <adminlte-vue-alert v-if="!connected" color="danger">Error connecting to source database. Please check configuration. To run the SSH tunel execute:
             <!--TODO Harcoded code!!! -->
-            <pre>/usr/bin/ssh -o StrictHostKeyChecking=no  -N -i /home/sergi/.ssh/id_rsa -L 14852:127.0.0.1:3306 -p 22 sergi@192.168.50.80</pre>
+            <pre>/usr/bin/ssh -o StrictHostKeyChecking=no  -N -i /home/sergi/.ssh/id_rsa -L 14852:127.0.0.1:3306 -p 22 sergi@192.168.50.180</pre>
         </adminlte-vue-alert>
 
         <h4>Source Database</h4>

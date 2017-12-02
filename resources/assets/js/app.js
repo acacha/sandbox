@@ -47,8 +47,7 @@ Vue.component('users-dashboard', require('./components/users/dashboard/UsersDash
 Vue.component('model-tracking', require('./components/tracking/ModelTracking.vue'))
 Vue.component('user-profile', require('./components/users/profile/UserProfile.vue'))
 
-Vue.component('users-migration-dashboard', require('./components/users/migration/UsersMigrationDashboard.vue'))
-Vue.component('users-migration', require('./components/users/migration/UsersMigration.vue'))
+require('ebre-escool-users-migration-bootstrap');
 
 // Google Apps vue components
 Vue.component('google-apps-dashboard', require('./components/users/google/GoogleAppsDashboard.vue'))

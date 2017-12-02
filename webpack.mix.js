@@ -14,6 +14,16 @@ const { mix } = require('laravel-mix');
 mix.js('resources/assets/js/app.js', 'public/js')
    .js('resources/assets/js/app-landing.js', 'public/js/app-landing.js')
    .js('resources/assets/js/app-fullscreen.js', 'public/js/app-p-fullscreen.js')
+  .sourceMaps()
+  .webpackConfig({
+    resolve: {
+      modules: [
+        path.resolve(__dirname, './users/resources/assets/js'),
+        path.resolve(__dirname, './users-ebre-escool-migration/resources/assets/js'),
+        path.resolve(__dirname, 'node_modules')
+      ]
+    }
+  })
    .scripts([
     'resources/assets/js/modernizr.custom.js',
     'public/js/app-p-fullscreen.js'

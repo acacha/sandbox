@@ -3,7 +3,7 @@
 namespace App;
 
 use Acacha\Users\Traits\ExposePermissions;
-use Acacha\Users\Traits\HasUserMigrations;
+use Acacha\UsersEbreEscoolMigration\Traits\HasUserMigrations;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;

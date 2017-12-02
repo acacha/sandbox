@@ -1,7 +1,7 @@
 <template>
     <simple-step-form>
-        <template scope="props">
-            <ol class="questions" scope="props">
+        <template slot-scope="props">
+            <ol class="questions" slot-scope="props">
                 <li :class="{ current : props.current == 0 }" >
                     <span><label for="q1">{{ props.current }} | What's your email?</label></span>
                     <input id="email" name="email" type="email"/>

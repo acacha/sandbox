@@ -22,6 +22,5 @@ class DatabaseSeeder extends Seeder
 
         first_user_as_users_test_manager();
 
-        factory(Event::class,50)->create();
     }
 }

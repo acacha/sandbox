@@ -1,7 +1,7 @@
 {
     "version": 2,
     "paths": [
-        "../users",
-        "../users-ebre-escool-migration"
+        "./users",
+        "./users-ebre-escool-migration"
     ]
 }

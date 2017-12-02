@@ -30,7 +30,7 @@ if (!function_exists('initialize_permissions')) {
 if (!function_exists('first_user_as_users_test_manager')) {
     function first_user_as_users_test_manager()
     {
-        User::all()->first()->assignRole('users-manager');
+        User::all()->first()->assignRole('manage-users');
         User::all()->first()->assignRole('migrate-users');
     }
 }

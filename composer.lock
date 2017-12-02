@@ -296,7 +296,7 @@
             "version": "dev-master",
             "dist": {
                 "type": "path",
-                "url": "../users",
+                "url": "./users",
                 "reference": "8174df6fc3a10ee14f5cf68aed2b2899621abc90",
                 "shasum": null
             },
@@ -370,7 +370,7 @@
             "version": "dev-master",
             "dist": {
                 "type": "path",
-                "url": "../users-ebre-escool-migration",
+                "url": "./users-ebre-escool-migration",
                 "reference": "322f57726ea9022d04a4c83e91d9a1249e86550f",
                 "shasum": null
             },
